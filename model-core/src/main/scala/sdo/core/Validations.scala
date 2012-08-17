@@ -3,8 +3,8 @@ package sdo.core
 import scala.util.matching._
 
 case class MustBeNumeric( badValue :String) extends FieldError
-case class SsnFieldCannotBeAllZeros( badValue:String) extends FieldError
-case class SsnFieldCannotContain666( badValue:String) extends FieldError
+case class CannotBeAllZeros( badValue:String) extends FieldError
+case class CannotContain666( badValue:String) extends FieldError
 case class CannotBeLongerThan( length:Integer, badValue:String) extends FieldError
 
 object ValidationMethods {
@@ -15,18 +15,19 @@ object ValidationMethods {
 
 	def allNumeric( value : Option[String]) : List[FieldError] = 
 		value.map( v => numericStringRegex findFirstIn v match {
+			case Some(f) => emptyFieldErrorList
 			case None => MustBeNumeric( v) :: Nil
 		}).getOrElse( emptyFieldErrorList)
 
 	def notAllZeros( value : Option[String]):List[FieldError] = 
 		value.map( v => allZerosRegex findFirstIn v match {
-			case Some(f) => SsnFieldCannotBeAllZeros( f) :: Nil
+			case Some(f) => CannotBeAllZeros( f) :: Nil
 			case None => emptyFieldErrorList
 	}).getOrElse( emptyFieldErrorList)
 
 	def not666( value : Option[String]):List[FieldError] = 
 		value.map( v => ValidationMethods.triple6 findFirstIn v match {
-			case Some(f) => SsnFieldCannotBeAllZeros( f) :: Nil
+			case Some(f) => CannotContain666( f) :: Nil
 			case None => emptyFieldErrorList
 	}).getOrElse( emptyFieldErrorList)
 
