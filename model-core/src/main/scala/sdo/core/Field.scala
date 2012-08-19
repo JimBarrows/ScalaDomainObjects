@@ -8,6 +8,8 @@ trait Field[ValueType] {
 
 	protected var dirty = false
 
+	protected var initialized = false
+
 	protected var data:Option[ValueType] = None
 
 	def dirty_? = dirty
@@ -19,6 +21,10 @@ trait Field[ValueType] {
 	def validations:List[ValidationFunction]=Nil
 
 	def validate: List[FieldError] = runValidations( value)
+
+	def clean_? = ! dirty
+
+	def initialized_? = initialized
 
 	protected def runValidations(in :Option[ValueType]) :List[FieldError] = in match{
 		case Some(_) => validations.flatMap(_ ( in)).removeDuplicates
@@ -32,16 +38,19 @@ trait Field[ValueType] {
 
 
 	def assign( newValue : Option[ValueType]):List[FieldError] = {
-		if (! data.equals( newValue) && writable_? ) {
+		if (! data.equals( newValue) && (writable_? || ! initialized_? )) {
 			var errors = runValidations( newValue)
 			if( errors.isEmpty) {
 				data = newValue
 				dirty = true
+				initialized=true
 			} 
 			return errors
 		} 
 		return Nil
 	}
+
+	def makeClean = dirty=false
 }
 
 trait FieldError
