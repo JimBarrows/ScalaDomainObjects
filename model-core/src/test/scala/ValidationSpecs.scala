@@ -67,5 +67,11 @@ class ValidationsSpecs extends Specification {
 		"returns CannotBeLongerThan(4, 12345) when the string 12345, and the length 4" in {
 			maxLength(4)(Some("12345")) must contain( CannotBeLongerThan( 4, "12345"))
 		}
+		"validate 'abc' is all alpha" in {
+			allAlpha(Some("abc")) must be empty
+		}
+		"returns MustBeAlpha('1abc') when the string is '1abc'" in {
+			allAlpha(Some("1abc")) must contain( MustBeAlpha("1abc"))
+		}
 	}
 }

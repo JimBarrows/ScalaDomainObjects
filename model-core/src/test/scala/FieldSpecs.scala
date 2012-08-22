@@ -128,4 +128,47 @@ class FieldSpecs extends Specification {
 			testField.value must beSome("A string")
 		}
 	}
+
+	"A numeric field " should {
+		"accept '123456'" in {
+			val numeric = new NumericField()
+			numeric.assign(Some("123456")) must be empty
+		}
+
+		"return error for 'a123456'" in {
+			val numeric = new NumericField()
+			numeric.assign(Some("a123456")) must not be empty
+		}
+
+		"return error for '123a456'" in {
+			val numeric = new NumericField()
+			numeric.assign(Some("123a456")) must not be empty
+		}
+
+		"return error for '123456a'" in {
+			val numeric = new NumericField()
+			numeric.assign(Some("123456a")) must not be empty
+		}
+
+		"return error for ''" in {
+			val numeric = new NumericField()
+			numeric.assign(Some("")) must not be empty
+		}
+
+		"return error for ' 1 '" in {
+			val numeric = new NumericField()
+			numeric.assign(Some(" 1 ")) must not be empty
+		}
+	}
+
+	"An alpha field " should {
+		"accept 'abc'" in {
+			val alpha = new AlphaField()
+			alpha.assign(Some("abc")) must be empty
+		}
+		"return MustBeAlpha('1abc') for value '1abc'" in {
+			val alpha = new AlphaField()
+			alpha.assign(Some("1abc")) must contain ( MustBeAlpha("1abc"))
+		}
+	}
 }
