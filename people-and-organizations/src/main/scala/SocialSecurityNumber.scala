@@ -71,7 +71,8 @@ object SerialNumber {
 
 	def unapply( a:SerialNumber) = a.value
 }
-case class SSN ( area:Option[AreaNumber], group:Option[GroupNumber], serial:SerialNumber)
+
+sealed case class SSN ( area:Option[AreaNumber], group:Option[GroupNumber], serial:SerialNumber)
 
 class SocialSecurityNumberField extends Field[SSN] {
 

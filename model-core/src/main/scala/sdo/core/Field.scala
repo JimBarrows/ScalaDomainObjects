@@ -1,21 +1,40 @@
 package sdo.core 
 
+import reactive.{Signal, EventStream, EventSource, Observing, CanForward, Forwardable, NamedFunction}
 import ValidationMethods._
 
-trait Field[ValueType] {
+object Field {
+/*	def apply[T](v : T) = {
+		var f = new Field()
+		f value =  v
+		f
+	}
+	def unapply[T](v: Field[T]) = v.value*/
+	implicit def vari[T]: CanForward[Field[T], T] = new CanForward[Field[T], T] {
+		def forward(s: Forwardable[T], t: => Field[T])(implicit o: Observing) = 
+			s foreach NamedFunction(">>"+t.debugName)(t.update)
+  }
+	implicit def eventSource[T]: CanForward[EventSource[T], T] = new CanForward[EventSource[T], T] {
+		def forward(s: Forwardable[T], t: => EventSource[T])(implicit o: Observing) = 
+			s foreach NamedFunction(">>"+t.debugString)(t.fire)
+  }
+}
 
-	type ValidationFunction = Option[ValueType] => List[FieldError]
+class Field[T] extends Signal[T] {
+
+	type ValidationFunction = Option[T] => List[FieldError]
+
+	protected var validationErrorList:List[FieldError] = Nil
+
+	protected var data:Option[T] = None
 
 	protected var dirty = false
 
 	protected var initialized = false
 
-	protected var data:Option[ValueType] = None
 
 	def dirty_? = dirty
 	
-	def readable_? = true
-
 	def writable_? = true
 
 	def validations:List[ValidationFunction]=Nil
@@ -26,31 +45,48 @@ trait Field[ValueType] {
 
 	def initialized_? = initialized
 
-	protected def runValidations(in :Option[ValueType]) :List[FieldError] = in match{
+	override def now = data.get
+
+	lazy val change: EventStream[T] = change0
+  private lazy val change0 = new EventSource[T] 
+
+	protected def runValidations(in :Option[T]) :List[FieldError] = in match{
 		case Some(_) => validations.flatMap(_ ( in)).removeDuplicates
 		case None => Nil
 	}
 
-	def value:Option[ValueType] = synchronized {
-		if( readable_?) data
-		else None
-	}
+	def value:Option[T] = data
 
 
-	def assign( newValue : Option[ValueType]):List[FieldError] = {
+	def assign( newValue : Option[T]):Field[T] = {
 		if (! data.equals( newValue) && (writable_? || ! initialized_? )) {
-			var errors = runValidations( newValue)
-			if( errors.isEmpty) {
-				data = newValue
-				dirty = true
-				initialized=true
-			} 
-			return errors
+			validationErrorList = runValidations( newValue)
+			data = newValue
+			dirty = true
+			initialized=true
+			change0.fire( newValue.get)
 		} 
-		return Nil
+		this
 	}
+
+	def value_=(newValue : Option[T]) = assign( newValue)
+
+	def value_=(newValue : T) :Field[T]= assign( newValue)
+
+	def assign( newValue : T):Field[T] = if (newValue == null) assign( None) else assign( Some( newValue))
+
+	def update( newValue: T):Unit = assign( newValue)
 
 	def makeClean = dirty=false
+
+	def validationErrors = validationErrorList
+
+	def <-->(other: Field[T])(implicit observing: Observing): this.type = {
+		println("<-->")
+		this.distinct >> other
+		other.distinct >> this
+		this
+  }
 }
 
 /** A Field consisting entirely of numbers
@@ -65,5 +101,5 @@ class AlphaField extends Field[String] {
 	override def validations:List[ValidationFunction] = allAlpha _  :: Nil
 }
 
-class TextField extends Field[String] {
-}
+/*class TextField extends Field[String] {
+}*/

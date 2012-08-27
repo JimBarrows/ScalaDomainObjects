@@ -1,6 +1,7 @@
 package sdo.specs
 
 import org.specs2.mutable._
+import reactive.{Observing, Var}
 import sdo.core._
 import sdo.core.ValidationMethods.emptyFieldErrorList
 
@@ -25,11 +26,6 @@ class FieldSpecs extends Specification {
 		"uninitialized by default" in {
 			val testField = new TestField()
 			testField.initialized_? must beFalse
-		}
-
-		"readable by default" in {
-			val testField = new TestField()
-			testField.readable_? must beTrue
 		}
 
 		"writable by default" in {
@@ -64,12 +60,12 @@ class FieldSpecs extends Specification {
 			validatorWasCalled must beTrue
 		}
 
-		"assignment returns empty list when validations pass" in {
+		"field contains an empty list when validations pass" in {
 			val testField = new TestField()
-			testField.assign(Some("this is another string")) must be empty
+			testField.assign(Some("this is another string")).validationErrors must be empty
 		}
 
-		"assignment returns a list of error when validations fail" in{
+		"field contains a list of errors when validations fail" in{
 			val testField = new TestField(){
 
 				override def validationCalled( value:Option[String]):List[FieldError] =  {
@@ -77,16 +73,8 @@ class FieldSpecs extends Specification {
 					}
 
 			}
-			testField.assign(Some("this is another string")) must contain( TestError())
+			testField.assign(Some("this is another string")).validationErrors must contain( TestError())
 
-		}
-
-		"when not readable, returns None" in {
-			val testField = new TestField() {
-				override def readable_? = false
-			}
-			testField.assign(Some("A string"))
-			testField.value must beNone
 		}
 
 		"returns the value assigned" in {
@@ -127,48 +115,61 @@ class FieldSpecs extends Specification {
 			testField.assign(Some("Another string"))
 			testField.value must beSome("A string")
 		}
+
+		"notifiy others when it becomes dirty" in {
+			var heard = false
+			object Listener extends Observing {
+				val testField = new TestField()  
+				testField.change foreach  setHeardTrue
+				def setHeardTrue(v:String):Unit  = {
+					heard=true
+				}
+			}
+			Listener.testField.assign(Some("A string"))
+			heard must beTrue
+		}
 	}
 
 	"A numeric field " should {
 		"accept '123456'" in {
 			val numeric = new NumericField()
-			numeric.assign(Some("123456")) must be empty
+			numeric.assign(Some("123456")).validationErrors must be empty
 		}
 
 		"return error for 'a123456'" in {
 			val numeric = new NumericField()
-			numeric.assign(Some("a123456")) must not be empty
+			numeric.assign(Some("a123456")).validationErrors must not be empty
 		}
 
 		"return error for '123a456'" in {
 			val numeric = new NumericField()
-			numeric.assign(Some("123a456")) must not be empty
+			numeric.assign(Some("123a456")).validationErrors must not be empty
 		}
 
 		"return error for '123456a'" in {
 			val numeric = new NumericField()
-			numeric.assign(Some("123456a")) must not be empty
+			numeric.assign(Some("123456a")).validationErrors must not be empty
 		}
 
 		"return error for ''" in {
 			val numeric = new NumericField()
-			numeric.assign(Some("")) must not be empty
+			numeric.assign(Some("")).validationErrors must not be empty
 		}
 
 		"return error for ' 1 '" in {
 			val numeric = new NumericField()
-			numeric.assign(Some(" 1 ")) must not be empty
+			numeric.assign(Some(" 1 ")).validationErrors must not be empty
 		}
 	}
 
 	"An alpha field " should {
 		"accept 'abc'" in {
 			val alpha = new AlphaField()
-			alpha.assign(Some("abc")) must be empty
+			alpha.assign(Some("abc")).validationErrors must be empty
 		}
 		"return MustBeAlpha('1abc') for value '1abc'" in {
 			val alpha = new AlphaField()
-			alpha.assign(Some("1abc")) must contain ( MustBeAlpha("1abc"))
+			alpha.assign(Some("1abc")).validationErrors must contain ( MustBeAlpha("1abc"))
 		}
 	}
 }
