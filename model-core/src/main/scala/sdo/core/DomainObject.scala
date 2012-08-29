@@ -1,10 +1,23 @@
 package sdo.core
 
-trait DomainObject {
+import reactive.Observing
 
-	private var dirty = false
+trait DomainObject extends Observing 	{
+
+	type ValidationFunction = DomainObject => List[DomainObjectError]
+
+	protected var validationErrorList : List[DomainObjectError] = Nil
 
 	def fieldList : List[Field[_]] =  Nil
 
-	def isDirty = dirty
+	def dirty_? = fieldList.exists( f => f.dirty_?)
+
+	def clean:Unit = fieldList.foreach( f => f.makeClean)
+
+	def validationErrors [T <: ValidationError] : List[ValidationError] = validationErrorList ++ fieldList.flatMap( _.validationErrors)
+
+	def validatorList : List[ValidationFunction] = Nil 
+
+	def runValidations  = validationErrorList = validatorList.flatMap(_(this))
+
 }

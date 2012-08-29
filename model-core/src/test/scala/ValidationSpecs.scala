@@ -4,9 +4,9 @@ import org.specs2.mutable._
 import sdo.core._
 import sdo.core.ValidationMethods._
 
-class ValidationsSpecs extends Specification {
+class ValidationSpecs extends Specification {
 
-	"The Validation object " should {
+	"The Field Validation object " should {
 		"validate an all numeric string" in {
 			allNumeric( Some("999")) must be empty
 		}
@@ -72,6 +72,29 @@ class ValidationsSpecs extends Specification {
 		}
 		"returns MustBeAlpha('1abc') when the string is '1abc'" in {
 			allAlpha(Some("1abc")) must contain( MustBeAlpha("1abc"))
+		}
+	}
+
+
+	import DomainValidationMethods._
+	"The Domain Validation Object" should {
+		"validate that when no fields have value onlyOneHasValue has no errors" in {
+			val field1 = new NumericField()
+			val field2 = new AlphaField()
+			onlyOneHasValue( field1 :: field2 :: Nil)(null) must be empty
+		}
+		"validate that when one field has value onlyOneHasValue has no errors" in {
+			val field1 = new NumericField()
+			val field2 = new AlphaField()
+			field1.value = "1"
+			onlyOneHasValue( field1 :: field2 :: Nil)(null) must be empty
+		}
+		"validate that when all fields have value onlyOneHasValue returns OnlyOneFieldCanHaveValue( fieldList)" in {
+			val field1 = new NumericField()
+			val field2 = new AlphaField()
+			field1.value = "1"
+			field2.value = "a"
+			onlyOneHasValue( field1:: field2::Nil)(null) must contain( OnlyOneFieldCanHaveValue( field1 :: field2 :: Nil))
 		}
 	}
 }

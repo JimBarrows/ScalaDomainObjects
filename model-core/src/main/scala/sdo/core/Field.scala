@@ -4,12 +4,7 @@ import reactive.{Signal, EventStream, EventSource, Observing, CanForward, Forwar
 import ValidationMethods._
 
 object Field {
-/*	def apply[T](v : T) = {
-		var f = new Field()
-		f value =  v
-		f
-	}
-	def unapply[T](v: Field[T]) = v.value*/
+
 	implicit def vari[T]: CanForward[Field[T], T] = new CanForward[Field[T], T] {
 		def forward(s: Forwardable[T], t: => Field[T])(implicit o: Observing) = 
 			s foreach NamedFunction(">>"+t.debugName)(t.update)
@@ -38,8 +33,6 @@ class Field[T] extends Signal[T] {
 	def writable_? = true
 
 	def validations:List[ValidationFunction]=Nil
-
-	def validate: List[FieldError] = runValidations( value)
 
 	def clean_? = ! dirty
 
