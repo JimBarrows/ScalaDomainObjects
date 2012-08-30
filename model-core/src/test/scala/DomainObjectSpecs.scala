@@ -2,18 +2,27 @@ package sdo.specs
 
 import org.specs2.mutable.Specification
 import org.specs2.execute.Pending
+import org.scalastuff.scalabeans.Preamble._
 import sdo.core.{DomainObject, Field, NumericField, AlphaField}
 import sdo.core.{MustBeNumeric, OnlyOneFieldCanHaveValue}
 import sdo.core.DomainValidationMethods.onlyOneHasValue
 
 class Test extends DomainObject {
 
+	println("Test Begin")
+	override def descriptor = descriptorOf[Test]
+
 	val numeric = new NumericField()
 
 	val alpha = new AlphaField()
 
-	override def fieldList : List[Field[_]]= numeric :: alpha :: Nil
-
+	override lazy val fieldList : List[Field[_]] =  {
+		println("fieldList is called")
+		this.numeric :: this.alpha :: Nil
+		}
+	
+	setup()
+	println("Test end")
 }
 
 class DomainObjectSpecs extends Specification {
@@ -49,7 +58,17 @@ class DomainObjectSpecs extends Specification {
 			}
 			test.numeric value = "1"
 			test.alpha value="a"
-			test.runValidations
+			test.runValidations( null)
+			test.validationErrors must contain (OnlyOneFieldCanHaveValue( test.numeric :: test.alpha :: Nil))
+		}
+
+		"validates itself whenever a field changes" in {
+			
+			val test = new Test() {
+				override def validatorList : List[ValidationFunction] = onlyOneHasValue( numeric:: alpha::Nil) _ :: Nil				
+			}
+			test.numeric value = "1"
+			test.alpha value="a"
 			test.validationErrors must contain (OnlyOneFieldCanHaveValue( test.numeric :: test.alpha :: Nil))
 		}
 	}
