@@ -6,7 +6,7 @@ trait ValidationError
 
 trait FieldError extends ValidationError
 
-trait DomainObjectError extends ValidationError
+trait EntityError extends ValidationError
 
 case class MustBeNumeric( badValue :String) extends FieldError
 case class MustBeAlpha( badValue :String) extends FieldError
@@ -14,14 +14,14 @@ case class CannotBeAllZeros( badValue:String) extends FieldError
 case class CannotContain666( badValue:String) extends FieldError
 case class CannotBeLongerThan( length:Integer, badValue:String) extends FieldError
 
-case class OnlyOneFieldCanHaveValue( fields: List[Field[_]]) extends DomainObjectError
+case class OnlyOneFieldCanHaveValue( fields: List[Field[_]]) extends EntityError
 
-object DomainValidationMethods {
+object EntityValidationMethods {
 
-	val emptyDomainErrorList = List[DomainObjectError]()
+	val emptyEntityErrorList = List[EntityError]()
 
-	def onlyOneHasValue( fields : List[Field[_]]) (domainObject : DomainObject) = fields.filter( f => ! f.value.isEmpty ).length match {
-		case l if 0 until 2 contains l => emptyDomainErrorList
+	def onlyOneHasValue( fields : List[Field[_]]) (entityObject : Entity) = fields.filter( f => ! f.value.isEmpty ).length match {
+		case l if 0 until 2 contains l => emptyEntityErrorList
 		case x => OnlyOneFieldCanHaveValue( fields) :: Nil
 	}
 }

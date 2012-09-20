@@ -3,13 +3,12 @@ package sdo.specs
 import org.specs2.mutable.Specification
 import org.specs2.execute.Pending
 import org.scalastuff.scalabeans.Preamble._
-import sdo.core.{DomainObject, Field, NumericField, AlphaField}
+import sdo.core.{Entity, Field, NumericField, AlphaField}
 import sdo.core.{MustBeNumeric, OnlyOneFieldCanHaveValue}
-import sdo.core.DomainValidationMethods.onlyOneHasValue
+import sdo.core.EntityValidationMethods.onlyOneHasValue
 
-class Test extends DomainObject {
+class Test extends Entity{
 
-	println("Test Begin")
 	override def descriptor = descriptorOf[Test]
 
 	val numeric = new NumericField()
@@ -17,17 +16,15 @@ class Test extends DomainObject {
 	val alpha = new AlphaField()
 
 	override lazy val fieldList : List[Field[_]] =  {
-		println("fieldList is called")
 		this.numeric :: this.alpha :: Nil
 		}
 	
 	setup()
-	println("Test end")
 }
 
-class DomainObjectSpecs extends Specification {
+class EntitySpecs extends Specification {
 
-	"The DomainObject trait " should {
+	"The Entity trait " should {
 
 		"provide a list of it's fields" in {
 			Pending("Scala reflection is changing soon, and is way complex, so do this later")

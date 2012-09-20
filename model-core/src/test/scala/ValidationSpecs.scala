@@ -76,8 +76,8 @@ class ValidationSpecs extends Specification {
 	}
 
 
-	import DomainValidationMethods._
-	"The Domain Validation Object" should {
+	import EntityValidationMethods._
+	"The Entity Validation Object" should {
 		"validate that when no fields have value onlyOneHasValue has no errors" in {
 			val field1 = new NumericField()
 			val field2 = new AlphaField()
