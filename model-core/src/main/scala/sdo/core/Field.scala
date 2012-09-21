@@ -94,5 +94,12 @@ class AlphaField extends Field[String] {
 	override def validations:List[ValidationFunction] = allAlpha _  :: Nil
 }
 
-/*class TextField extends Field[String] {
-}*/
+/*
+class TextField extends Field[String] {
+}
+
+*/
+/** A Field that is either true or false.
+*/
+class BooleanField extends Field[Boolean] {
+}
