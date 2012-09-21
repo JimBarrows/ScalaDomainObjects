@@ -3,8 +3,8 @@ package sdo.specs
 import org.specs2.mutable.Specification
 import org.specs2.execute.Pending
 import org.scalastuff.scalabeans.Preamble._
-import sdo.core.{Entity, Field, NumericField, AlphaField}
-import sdo.core.{MustBeNumeric, OnlyOneFieldCanHaveValue}
+import sdo.core.{Entity, Field, NumericField, AlphaField }
+import sdo.core.{EntityError, ValidationError, MustBeNumeric, OnlyOneFieldCanHaveValue}
 import sdo.core.EntityValidationMethods.onlyOneHasValue
 
 class Test extends Entity{
@@ -51,7 +51,7 @@ class EntitySpecs extends Specification {
 
 		"returns a list of domain errors" in {
 			val test = new Test() {
-				override def validatorList : List[ValidationFunction] = onlyOneHasValue( numeric:: alpha::Nil) _ :: Nil				
+				override def validatorList : List[ Entity => List[EntityError]] = onlyOneHasValue( numeric:: alpha::Nil) _ :: Nil				
 			}
 			test.numeric value = "1"
 			test.alpha value="a"
@@ -62,7 +62,7 @@ class EntitySpecs extends Specification {
 		"validates itself whenever a field changes" in {
 			
 			val test = new Test() {
-				override def validatorList : List[ValidationFunction] = onlyOneHasValue( numeric:: alpha::Nil) _ :: Nil				
+				override def validatorList : List[Entity => List[EntityError]] = onlyOneHasValue( numeric:: alpha::Nil) _ :: Nil				
 			}
 			test.numeric value = "1"
 			test.alpha value="a"

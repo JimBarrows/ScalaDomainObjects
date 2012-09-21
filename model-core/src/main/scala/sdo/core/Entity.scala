@@ -5,13 +5,15 @@ import reactive.Observing
 
 trait Entity extends Observing 	{
 
-	type ValidationFunction = Entity => List[EntityError]
+	type ValidationFunction = Entity => List[ValidationError]
 
-	protected var validationErrorList : List[EntityError] = Nil
+	protected var validationErrorList : List[ValidationError] = Nil
 
 	def descriptor =  descriptorOf[Entity]
 
-	def fieldList : List[Field[_]] = {
+	def fieldList : List[Field[_]] = Nil
+	/*
+	{
 		descriptor.properties.map( p =>
 			descriptor.get(this, p.name) match {
 				case f:Field[_] => f
@@ -19,6 +21,7 @@ trait Entity extends Observing 	{
 			}
 		).asInstanceOf[List[Field[_]]]
 	}
+	*/
 
 
 	def dirty_? = fieldList.exists( f => f.dirty_?)
@@ -27,7 +30,7 @@ trait Entity extends Observing 	{
 
 	def validationErrors [T <: ValidationError] : List[ValidationError] = validationErrorList ++ fieldList.flatMap( _.validationErrors)
 
-	def validatorList : List[ValidationFunction] = Nil 
+	def validatorList : List[Entity => List[ValidationError]] = Nil 
 
 	def runValidations(domainObject: Any):Unit  = validationErrorList = validatorList.flatMap(_(this))
 
@@ -37,3 +40,5 @@ trait Entity extends Observing 	{
 		})
 		}
 }
+
+

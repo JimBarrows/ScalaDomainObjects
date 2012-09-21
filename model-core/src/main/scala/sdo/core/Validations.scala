@@ -25,6 +25,7 @@ object EntityValidationMethods {
 		case x => OnlyOneFieldCanHaveValue( fields) :: Nil
 	}
 }
+
 object ValidationMethods {
 	val numericStringRegex = """^\d+$""".r
 	val alphaStringRegex = """^[a-zA-Z]*$""".r
