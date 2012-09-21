@@ -1,8 +1,9 @@
 package sdo.specs
 
 import org.specs2.mutable._
-import sdo.core._
+import sdo.core.{ NumericField, AlphaField, OnlyOneFieldCanHaveValue, MustBeAlpha, MustBeNumeric, CannotBeAllZeros, CannotContain666, CannotBeLongerThan}
 import sdo.core.ValidationMethods._
+import sdo.core.EntityValidationMethods._
 
 class ValidationSpecs extends Specification {
 
@@ -76,7 +77,6 @@ class ValidationSpecs extends Specification {
 	}
 
 
-	import EntityValidationMethods._
 	"The Entity Validation Object" should {
 		"validate that when no fields have value onlyOneHasValue has no errors" in {
 			val field1 = new NumericField()

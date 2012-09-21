@@ -2,7 +2,7 @@ package sdo.specs
 
 import org.specs2.mutable._
 import reactive.{Observing, Var}
-import sdo.core._
+import sdo.core.{FieldError, Field, NumericField, AlphaField, MustBeAlpha}
 import sdo.core.ValidationMethods.emptyFieldErrorList
 
 class FieldSpecs extends Specification {
