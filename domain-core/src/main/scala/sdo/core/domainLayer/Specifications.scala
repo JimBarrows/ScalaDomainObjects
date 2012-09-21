@@ -1,4 +1,4 @@
-package sdo.core
+package sdo.core.domain
 
 trait Specification[T] {
 	def isSatisfiedBy( candidate :T) = false

@@ -3,9 +3,9 @@ package sdo.specs
 import org.specs2.mutable.Specification
 import org.specs2.execute.Pending
 import org.scalastuff.scalabeans.Preamble._
-import sdo.core.{Entity, Field, BooleanField, Specification=>EntitySpecification, AndSpecification, OrSpecification, NotSpecification }
-import sdo.core.{MustBeNumeric, OnlyOneFieldCanHaveValue}
-import sdo.core.EntityValidationMethods.onlyOneHasValue
+import sdo.core.domain.{Entity, Field, BooleanField, Specification=>EntitySpecification, AndSpecification, OrSpecification, NotSpecification }
+import sdo.core.domain.{MustBeNumeric, OnlyOneFieldCanHaveValue}
+import sdo.core.domain.EntityValidationMethods.onlyOneHasValue
 
 class SpecificationSpecs extends Specification {
 

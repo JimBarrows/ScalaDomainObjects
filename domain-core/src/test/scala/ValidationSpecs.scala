@@ -1,9 +1,9 @@
 package sdo.specs
 
 import org.specs2.mutable._
-import sdo.core.{ NumericField, AlphaField, OnlyOneFieldCanHaveValue, MustBeAlpha, MustBeNumeric, CannotBeAllZeros, CannotContain666, CannotBeLongerThan}
-import sdo.core.ValidationMethods._
-import sdo.core.EntityValidationMethods._
+import sdo.core.domain.{ NumericField, AlphaField, OnlyOneFieldCanHaveValue, MustBeAlpha, MustBeNumeric, CannotBeAllZeros, CannotContain666, CannotBeLongerThan}
+import sdo.core.domain.ValidationMethods._
+import sdo.core.domain.EntityValidationMethods._
 
 class ValidationSpecs extends Specification {
 

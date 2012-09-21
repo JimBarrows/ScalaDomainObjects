@@ -1,4 +1,4 @@
-package sdo.core
+package sdo.core.domain
 
 import scala.util.matching._
 

@@ -1,4 +1,4 @@
-package sdo.core 
+package sdo.core.domain
 
 import reactive.{Signal, EventStream, EventSource, Observing, CanForward, Forwardable, NamedFunction}
 import ValidationMethods._

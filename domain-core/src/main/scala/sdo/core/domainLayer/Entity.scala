@@ -1,4 +1,4 @@
-package sdo.core
+package sdo.core.domain
 
 import org.scalastuff.scalabeans.Preamble._
 import reactive.Observing

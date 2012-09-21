@@ -3,9 +3,9 @@ package sdo.specs
 import org.specs2.mutable.Specification
 import org.specs2.execute.Pending
 import org.scalastuff.scalabeans.Preamble._
-import sdo.core.{Entity, Field, NumericField, AlphaField }
-import sdo.core.{EntityError, ValidationError, MustBeNumeric, OnlyOneFieldCanHaveValue}
-import sdo.core.EntityValidationMethods.onlyOneHasValue
+import sdo.core.domain.{Entity, Field, NumericField, AlphaField }
+import sdo.core.domain.{EntityError, ValidationError, MustBeNumeric, OnlyOneFieldCanHaveValue}
+import sdo.core.domain.EntityValidationMethods.onlyOneHasValue
 
 class Test extends Entity{
 
