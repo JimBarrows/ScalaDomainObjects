@@ -92,14 +92,17 @@ class Field[T] extends Signal[T] {
   }
 }
 
-class EntityIdField( uuid :UUID) extends Field[UUID] {
+class EntityIdField[T]( id :T) extends Field[T] {
 	override def writable_? = false
 
-	value_=( uuid)
+	value_=( id)
 }
 
-object EntityIdField {
-	def apply = new EntityIdField( UUID.randomUUID())
+class EntityUuidIdField[UUID]( id :UUID) extends EntityIdField[UUID]( id) {
+}
+
+object EntityUuidIdField {
+	def apply = new EntityUuidIdField[UUID]( UUID.randomUUID())
 }
 
 /** A Field consisting entirely of numbers
@@ -109,11 +112,13 @@ class NumericField extends Field[String] {
 }
 
 object NumericField {
+
 	def apply( value :String) = {
 		val nf = new NumericField()
 		nf.value_= (value)
 		nf
 	}
+
 	def apply( value :Integer) = {
 		val nf = new NumericField()
 		nf.value_= (value.toString)
