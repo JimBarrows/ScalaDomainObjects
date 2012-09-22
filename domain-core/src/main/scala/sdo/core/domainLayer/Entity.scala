@@ -3,6 +3,8 @@ package sdo.core.domain
 import org.scalastuff.scalabeans.Preamble._
 import reactive.Observing
 
+/**  An object not fundamentally defined by it's attributes, but rather by a thread of continuity and identity
+*/
 trait Entity extends Observing 	{
 
 	type ValidationFunction = Entity => List[ValidationError]
@@ -12,17 +14,6 @@ trait Entity extends Observing 	{
 	def descriptor =  descriptorOf[Entity]
 
 	def fieldList : List[Field[_]] = Nil
-	/*
-	{
-		descriptor.properties.map( p =>
-			descriptor.get(this, p.name) match {
-				case f:Field[_] => f
-   	   case _ =>
-			}
-		).asInstanceOf[List[Field[_]]]
-	}
-	*/
-
 
 	def dirty_? = fieldList.exists( f => f.dirty_?)
 

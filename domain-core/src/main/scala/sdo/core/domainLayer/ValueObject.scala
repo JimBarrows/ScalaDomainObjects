@@ -7,4 +7,5 @@ trait ValueObject {
 
 	def fieldList : List[Field[_]] = Nil
 
+	fieldList.foreach( field => field.makeReadOnly)
 }
