@@ -54,8 +54,7 @@ class Field[T] extends Signal[T] {
 
 	def value:Option[T] = data
 
-
-	def assign( newValue : Option[T]):Field[T] = {
+	def assign( newValue : Option[T]) :Field[T]  = {
 		if (! data.equals( newValue) && (writable_? || ! initialized_? )) {
 			validationErrorList = runValidations( newValue)
 			data = newValue
@@ -68,16 +67,13 @@ class Field[T] extends Signal[T] {
 
 	def value_=(newValue : Option[T]) = assign( newValue)
 
-	def value_=(newValue : T) :Field[T]= assign( newValue)
+	def value_=(newValue : T) = if( newValue == null) assign(None) else assign( Some( newValue))
 
-	def assign( newValue : T):Field[T] = {
-		if (newValue == null) 
-			assign( None) 
-		else 
-			assign( Some( newValue))
+	def update( newValue: T):Unit = value = newValue
+
+	override def equals( that :Any) = {
+		(that.getClass == this.getClass) && (that.asInstanceOf[Field[T]].value == this.value)
 	}
-
-	def update( newValue: T):Unit = assign( newValue)
 
 	def makeClean:Unit = dirty=false
 
@@ -95,14 +91,14 @@ class Field[T] extends Signal[T] {
 class EntityIdField[T]( id :T) extends Field[T] {
 	override def writable_? = false
 
-	value_=( id)
+	value =( id)
 }
 
-class EntityUuidIdField[UUID]( id :UUID) extends EntityIdField[UUID]( id) {
+class EntityUuidIdField( val id :UUID) extends EntityIdField[UUID]( id) {
 }
 
 object EntityUuidIdField {
-	def apply = new EntityUuidIdField[UUID]( UUID.randomUUID())
+	def apply() :EntityUuidIdField = new EntityUuidIdField( UUID.randomUUID())
 }
 
 /** A Field consisting entirely of numbers
@@ -115,13 +111,13 @@ object NumericField {
 
 	def apply( value :String) = {
 		val nf = new NumericField()
-		nf.value_= (value)
+		nf.value = (value)
 		nf
 	}
 
 	def apply( value :Integer) = {
 		val nf = new NumericField()
-		nf.value_= (value.toString)
+		nf.value = (value.toString)
 		nf
 	}
 }
@@ -132,8 +128,21 @@ class AlphaField extends Field[String] {
 	override def validations:List[ValidationFunction] = allAlpha _  :: Nil
 }
 
+/** A field that can be anything that will fit in a string, but isn't that long.*/
+class ShortTextField extends Field[String] {
+	override def validations :List[ValidationFunction] = maxLength( 140) _ :: Nil
+}
+
+object ShortTextField {
+	def apply( text :String) = new ShortTextField() value = text
+}
+
 /**A field that represents notes and other large text.*/
 class TextField extends Field[String] {
+}
+
+object TextField {
+	def apply( text :String) :TextField = new TextField().value_=(text).asInstanceOf[TextField]
 }
 
 /** A Field that is either true or false.

@@ -2,7 +2,7 @@ package sdo.specs
 
 import org.specs2.mutable._
 import reactive.{Observing, Var}
-import sdo.core.domain.{FieldError, Field, NumericField, AlphaField, MustBeAlpha}
+import sdo.core.domain.{FieldError, Field, NumericField, AlphaField, MustBeAlpha, ShortTextField, EntityIdField, EntityUuidIdField}
 import sdo.core.domain.ValidationMethods.emptyFieldErrorList
 
 class FieldSpecs extends Specification {
@@ -128,6 +128,18 @@ class FieldSpecs extends Specification {
 			Listener.testField.assign(Some("A string"))
 			heard must beTrue
 		}
+
+		"not be equal if of different types" in {
+			NumericField(3).equals( ShortTextField("3")) must beFalse
+		}
+
+		"be equal if same type and value" in {
+			NumericField(3).equals( NumericField(3)) must beTrue
+		}
+
+		"not be equal if same type and different values" in {
+			NumericField(3).equals( NumericField(2)) must beFalse
+		}
 	}
 
 	"A numeric field " should {
@@ -170,6 +182,19 @@ class FieldSpecs extends Specification {
 		"return MustBeAlpha('1abc') for value '1abc'" in {
 			val alpha = new AlphaField()
 			alpha.assign(Some("1abc")).validationErrors must contain ( MustBeAlpha("1abc"))
+		}
+	}
+
+	"An entity id field" should {
+		"not be mutable" in {
+			val foo = new EntityIdField[Long] (1l)	
+			foo.value = 3l
+			foo.value must beSome.which( _ == 1l)
+		}
+
+		"have a uuid setable via apply" in {
+			val uuid = EntityUuidIdField()
+			uuid.value must beSome
 		}
 	}
 }
