@@ -66,6 +66,7 @@ class RepositorySpecs extends Specification {
 				}
 			}) must beFalse
 		}
+
 		"remove a list of entities from the repo" in {
 			destructibleRepo.removeAll( te1 :: te2 :: Nil)
 			destructibleRepo.exists( new Predicate[TestEntity] {
@@ -161,7 +162,9 @@ class RepositorySpecs extends Specification {
 		}
 
 		override def removeAll( entityList :List[TestEntity]) :Unit = {
-			list = list.filterNot( e => entityList.exists( e))
+			list = list.filterNot( e => {
+				entityList.exists( _.id == e.id)
+			})
 		}
 
 		override def find[ EntityUuidIdField]( id :EntityUuidIdField) :Option[TestEntity] = list.find( _.id == id)
