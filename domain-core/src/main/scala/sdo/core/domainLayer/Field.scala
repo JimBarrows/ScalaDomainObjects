@@ -1,5 +1,6 @@
 package sdo.core.domain
 
+import scala.math.BigInt
 import java.util.UUID
 
 import reactive.{Signal, EventStream, EventSource, Observing, CanForward, Forwardable, NamedFunction}
@@ -128,6 +129,16 @@ class AlphaField extends Field[String] {
 	override def validations:List[ValidationFunction] = allAlpha _  :: Nil
 }
 
+/** A Field that is either true or false.
+*/
+class BooleanField extends Field[Boolean] {
+}
+
+/** A class representing the mathematical concept of Integers.
+*/
+class IntegerField extends Field[BigInt] {
+}
+
 /** A field that can be anything that will fit in a string, but isn't that long.*/
 class ShortTextField extends Field[String] {
 	override def validations :List[ValidationFunction] = maxLength( 140) _ :: Nil
@@ -145,7 +156,3 @@ object TextField {
 	def apply( text :String) :TextField = new TextField().value_=(text).asInstanceOf[TextField]
 }
 
-/** A Field that is either true or false.
-*/
-class BooleanField extends Field[Boolean] {
-}
