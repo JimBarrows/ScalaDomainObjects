@@ -139,6 +139,14 @@ class BooleanField extends Field[Boolean] {
 class IntegerField extends Field[BigInt] {
 }
 
+object IntegerField {
+	def apply( value :Integer) = {
+		val intField = new IntegerField() 
+		intField value = BigInt(value)
+		intField
+	}
+}
+
 /** A field that can be anything that will fit in a string, but isn't that long.*/
 class ShortTextField extends Field[String] {
 	override def validations :List[ValidationFunction] = maxLength( 140) _ :: Nil

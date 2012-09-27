@@ -2,7 +2,7 @@ package sdo.specs
 
 import org.specs2.mutable._
 import reactive.{Observing, Var}
-import sdo.core.domain.{FieldError, Field, NumericField, AlphaField, MustBeAlpha, ShortTextField, EntityIdField, EntityUuidIdField}
+import sdo.core.domain.{FieldError, Field, NumericField, AlphaField, MustBeAlpha, ShortTextField, EntityIdField, EntityUuidIdField, IntegerField}
 import sdo.core.domain.ValidationMethods.emptyFieldErrorList
 
 class FieldSpecs extends Specification {
@@ -195,6 +195,12 @@ class FieldSpecs extends Specification {
 		"have a uuid setable via apply" in {
 			val uuid = EntityUuidIdField()
 			uuid.value must beSome
+		}
+	}
+
+	"An integer field" should {
+		"accept an integer to initialize itself" in {
+			IntegerField( 3).value must beSome.which ( _ == 3)
 		}
 	}
 }
