@@ -3,7 +3,7 @@ package sdo.specs
 import org.specs2.mutable._
 import reactive.{Observing, Var}
 import sdo.core.domain.{FieldError, Field, NumericField, AlphaField, MustBeAlpha, ShortTextField, EntityIdField, EntityUuidIdField, IntegerField}
-import sdo.core.domain.ValidationMethods.emptyFieldErrorList
+import sdo.core.domain.ValidationMethods.noErrors
 
 class FieldSpecs extends Specification {
 
@@ -15,7 +15,7 @@ class FieldSpecs extends Specification {
 		
 			override def validations:List[ValidationFunction] = validationCalled _ :: Nil
 
-			def validationCalled( value:Option[String]):List[FieldError] =  emptyFieldErrorList
+			def validationCalled( value:Option[String]):List[FieldError] =  noErrors
 		}
 
 		"be clean by default" in {
@@ -53,7 +53,7 @@ class FieldSpecs extends Specification {
 				
 				override def validationCalled( value:Option[String]):List[FieldError] =  {
 					validatorWasCalled = true
-					emptyFieldErrorList
+					noErrors
 					}
 			}
 			testField.assign(Some("this is another string"))

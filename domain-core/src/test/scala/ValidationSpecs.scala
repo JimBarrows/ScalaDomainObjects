@@ -1,7 +1,7 @@
 package sdo.specs
 
 import org.specs2.mutable._
-import sdo.core.domain.{ NumericField, AlphaField, OnlyOneFieldCanHaveValue, MustBeAlpha, MustBeNumeric, CannotBeAllZeros, CannotContain666, CannotBeLongerThan}
+import sdo.core.domain._
 import sdo.core.domain.ValidationMethods._
 import sdo.core.domain.EntityValidationMethods._
 
@@ -73,6 +73,18 @@ class ValidationSpecs extends Specification {
 		}
 		"returns MustBeAlpha('1abc') when the string is '1abc'" in {
 			allAlpha(Some("1abc")) must contain( MustBeAlpha("1abc"))
+		}
+
+		"validate minimum validates when the value is equal" in {
+			minimum( 3)(Some(3)) must be empty
+		}
+
+		"validate minimum validates when the value is greater" in {
+			minimum( 3)(Some(4)) must be empty
+		}
+		
+		"returns LessThanMinimum( 3, 2) when the value is 2" in {
+			minimum( 3)(Some(2)) must contain( LessThanMinimum( 3, 2))
 		}
 	}
 
