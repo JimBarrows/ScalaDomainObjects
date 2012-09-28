@@ -11,7 +11,7 @@ trait EntityError extends ValidationError
 case class CannotBeAllZeros( badValue:String) extends FieldError
 case class CannotContain666( badValue:String) extends FieldError
 case class CannotBeLongerThan( length:Integer, badValue:String) extends FieldError
-case class LessThanMinimum( minimum :Integer, badValue :Integer) extends FieldError
+case class LessThanMinimum( minimum :BigInt, badValue :BigInt) extends FieldError
 case class MustBeNumeric( badValue :String) extends FieldError
 case class MustBeAlpha( badValue :String) extends FieldError
 case class OnlyOneFieldCanHaveValue( fields: List[Field[_]]) extends EntityError
@@ -63,7 +63,7 @@ object ValidationMethods {
 				CannotBeLongerThan( length, v) :: Nil 
 			else noErrors ).getOrElse( noErrors)
 
-	def minimum( minimum :Integer)( value :Option[Integer]) :List[FieldError] =
+	def minimum( minimum :BigInt)( value :Option[BigInt]) :List[FieldError] =
 		value.map( v => if (v < minimum) LessThanMinimum( minimum, value.get) :: Nil else noErrors).getOrElse( noErrors)
 
 }
