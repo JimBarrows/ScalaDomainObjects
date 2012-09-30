@@ -6,7 +6,9 @@ scalaVersion := "2.9.1"
 
 libraryDependencies ++= Seq("org.specs2" %% "specs2" % "1.12" % "test",
 		"cc.co.scala-reactive" %% "reactive-core" % "0.2-SNAPSHOT", 
-		"org.scalastuff" % "scalabeans" % "0.3")
+		"org.scalastuff" % "scalabeans" % "0.3",
+		"org.scalaj" %% "scalaj-time" % "0.6"
+		)
   
 
 resolvers ++= Seq("snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",

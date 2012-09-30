@@ -3,6 +3,9 @@ package sdo.core.domain
 import scala.math.BigInt
 import java.util.UUID
 
+import org.scala_tools.time.Imports._
+import org.joda.time.DateMidnight
+
 import reactive.{Signal, EventStream, EventSource, Observing, CanForward, Forwardable, NamedFunction}
 import ValidationMethods._
 
@@ -164,3 +167,8 @@ object TextField {
 	def apply( text :String) :TextField = new TextField().value_=(text).asInstanceOf[TextField]
 }
 
+class DateTimeField extends Field[DateTime] {
+}
+
+class DateField extends Field[DateMidnight] {
+}
