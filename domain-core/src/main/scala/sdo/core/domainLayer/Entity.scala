@@ -11,6 +11,8 @@ trait Entity extends Observing 	{
 
 	protected var validationErrorList : List[ValidationError] = Nil
 
+	val id :EntityUuidIdField
+
 	def descriptor =  descriptorOf[Entity]
 
 	def fieldList : List[Field[_]] = Nil
@@ -24,6 +26,10 @@ trait Entity extends Observing 	{
 	def validatorList : List[Entity => List[ValidationError]] = Nil 
 
 	def runValidations(domainObject: Any):Unit  = validationErrorList = validatorList.flatMap(_(this))
+
+	override def equals( that :Any) = that match {
+		case entity :Entity => entity.id == this.id
+	}
 
 	def setup() {
 	fieldList.foreach( f =>  {

@@ -15,5 +15,16 @@ class ValueObjectSpecs extends Specification {
 			val testVo = new TestVo( NumericField(5), NumericField(6))
 			testVo.fieldList.foreach( _.writable_?  must beFalse)
 		}
+
+		"be equal to another value object if their fields are the same and the types are the same" in {
+			new TestVo( NumericField(5), NumericField(6)) must be_== (new TestVo( NumericField(5), NumericField(6)))
+
+		}
+		"be unequal to another value object if their fields are the same, but they're different types" in{
+			class TestVo2( override val foo :NumericField,override  val bar :NumericField) extends TestVo(foo, bar) {
+				override def fieldList :List[Field[_]] = foo :: bar :: Nil
+			}
+			new TestVo( NumericField(5), NumericField(6)) must not be_== (new TestVo2( NumericField(5), NumericField(6)))
+		}
 	}	
 }
