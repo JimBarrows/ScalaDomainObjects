@@ -2,7 +2,7 @@ package sdo.specs
 
 import org.specs2.mutable._
 import reactive.{Observing, Var}
-import sdo.core.domain.{FieldError, Field, NumericField, AlphaField, MustBeAlpha, ShortTextField, EntityIdField, EntityUuidIdField, IntegerField}
+import sdo.core.domain._
 import sdo.core.domain.ValidationMethods.noErrors
 
 class FieldSpecs extends Specification {
@@ -201,6 +201,44 @@ class FieldSpecs extends Specification {
 	"An integer field" should {
 		"accept an integer to initialize itself" in {
 			IntegerField( 3).value must beSome.which ( _ == 3)
+		}
+	}
+
+	"A list field" should {
+		"take a list of some type" in {
+			class StringListField extends ListField[ String] {
+			}
+			val field = new StringListField
+		}
+
+		"add an element to the list" in {
+			class StringListField extends ListField[ String] {
+			}
+			val field = new StringListField
+			field.add( "Hello")
+
+			field.value.get must contain( "Hello")
+		}
+
+		"remove an element to the list" in {
+			class StringListField extends ListField[ String] {
+			}
+			val field = new StringListField
+			field.add( "Hello")
+			field.remove( "Hello")
+
+			field.value.get must be empty
+		}
+
+		"two list fields are equal if they have the same elements" in {
+			class StringListField extends ListField[ String] {
+			}
+			val field1 = new StringListField
+			val field2 = new StringListField
+			field1.add( "Hello")
+			field2.add( "Hello")
+
+			field1 must be_==( field2)
 		}
 	}
 }

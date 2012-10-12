@@ -1,6 +1,7 @@
 package sdo.core.domain
 
 import scala.math.BigInt
+import scala.collection.mutable.MutableList
 import java.util.UUID
 
 import org.scala_tools.time.Imports._
@@ -9,17 +10,6 @@ import org.joda.time.DateMidnight
 import reactive.{Signal, EventStream, EventSource, Observing, CanForward, Forwardable, NamedFunction}
 import ValidationMethods._
 
-object Field {
-
-	implicit def vari[T]: CanForward[Field[T], T] = new CanForward[Field[T], T] {
-		def forward(s: Forwardable[T], t: => Field[T])(implicit o: Observing) = 
-			s foreach NamedFunction(">>"+t.debugName)(t.update)
-  }
-	implicit def eventSource[T]: CanForward[EventSource[T], T] = new CanForward[EventSource[T], T] {
-		def forward(s: Forwardable[T], t: => EventSource[T])(implicit o: Observing) = 
-			s foreach NamedFunction(">>"+t.debugString)(t.fire)
-  }
-}
 
 class Field[T] extends Signal[T] {
 
@@ -49,7 +39,7 @@ class Field[T] extends Signal[T] {
 	override def now = data.get
 
 	lazy val change: EventStream[T] = change0
-  private lazy val change0 = new EventSource[T] 
+  protected lazy val change0 = new EventSource[T] 
 
 	protected def runValidations(in :Option[T]) :List[FieldError] = in match{
 		case Some(_) => validations.flatMap(_ ( in)).removeDuplicates
@@ -89,6 +79,18 @@ class Field[T] extends Signal[T] {
 		this.distinct >> other
 		other.distinct >> this
 		this
+  }
+}
+
+object Field {
+
+	implicit def vari[T]: CanForward[Field[T], T] = new CanForward[Field[T], T] {
+		def forward(s: Forwardable[T], t: => Field[T])(implicit o: Observing) = 
+			s foreach NamedFunction(">>"+t.debugName)(t.update)
+  }
+	implicit def eventSource[T]: CanForward[EventSource[T], T] = new CanForward[EventSource[T], T] {
+		def forward(s: Forwardable[T], t: => EventSource[T])(implicit o: Observing) = 
+			s foreach NamedFunction(">>"+t.debugString)(t.fire)
   }
 }
 
@@ -171,4 +173,34 @@ class DateTimeField extends Field[DateTime] {
 }
 
 class DateField extends Field[DateMidnight] {
+}
+
+class ListField[T] extends Field[ MutableList[ T]] {
+
+	data = Some( new MutableList[T]())
+
+	def add( newValue :T) :Unit = data.map( l => { 
+
+		if (writable_? || ! initialized_? ) {
+			l += newValue 
+			validationErrorList = runValidations(  Some(l))
+			dirty = true
+			initialized=true
+			change0.fire( l)
+		} 
+	})
+
+	def remove( value :T) :Unit = data = data.map( l=> {
+		if (writable_? || ! initialized_? ) {
+			val newList = l.diff( value :: Nil)	
+			validationErrorList = runValidations(  Some(l))
+			dirty = true
+			initialized=true
+			change0.fire( newList)
+			newList
+		} else {
+			l
+		}
+	})
+
 }
