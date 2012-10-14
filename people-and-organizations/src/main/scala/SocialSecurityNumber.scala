@@ -1,7 +1,7 @@
-package sdo.core.identifiers
+package sdo.peopleAndOrganizations
 
-import sdo.core.NumericField
-import sdo.ValidationMethods.{not666, maxLength,notBetween}
+import sdo.core.domain._
+import sdo.core.domain.ValidationMethods._
 
 class SsnNumber extends NumericField {
 
@@ -20,14 +20,14 @@ class AreaNumber extends SsnNumber {
 	def notBetween734And749( value : Option[String]):List[FieldError] = 
 		value.map( v => """^7[34][4-9]$""".r findFirstIn v match {
 			case Some(f) => AreaCannotBeBetween734And749( f) :: Nil
-			case None => emptyFieldErrorList
-		}).getOrElse( emptyFieldErrorList)
+			case None => noErrors
+		}).getOrElse( noErrors)
 
 	def notOver772( value : Option[String]):List[FieldError] = 
 		value.map( v => """^[8-9][8-9][3-9]$""".r findFirstIn v match {
 			case Some(f) => CannotBeOver772( f) :: Nil
-			case None => emptyFieldErrorList
-		}).getOrElse( emptyFieldErrorList)
+			case None => noErrors
+		}).getOrElse( noErrors)
 
 }
 
@@ -90,8 +90,8 @@ class SocialSecurityNumberField extends Field[SSN] {
 			case SSN( Some(AreaNumber("987")), Some(GroupNumber("65")), SerialNumber("4327")) => CannotBeBetween987_65_4320To987_65_4329 (v) :: Nil
 			case SSN( Some(AreaNumber("987")), Some(GroupNumber("65")), SerialNumber("4328")) => CannotBeBetween987_65_4320To987_65_4329 (v) :: Nil
 			case SSN( Some(AreaNumber("987")), Some(GroupNumber("65")), SerialNumber("4329")) => CannotBeBetween987_65_4320To987_65_4329 (v) :: Nil
-			case _ => emptyFieldErrorList
-		}).getOrElse( emptyFieldErrorList)
+			case _ => noErrors
+		}).getOrElse( noErrors)
 
 }
 

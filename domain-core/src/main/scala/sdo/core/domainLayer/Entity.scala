@@ -5,13 +5,9 @@ import reactive.Observing
 
 /**  An object not fundamentally defined by it's attributes, but rather by a thread of continuity and identity
 */
-trait Entity extends Observing 	{
+class Entity extends Observing with Validation	{
 
-	type ValidationFunction = Entity => List[ValidationError]
-
-	protected var validationErrorList : List[ValidationError] = Nil
-
-	val id :EntityUuidIdField
+	val id = EntityUuidIdField
 
 	def descriptor =  descriptorOf[Entity]
 
@@ -21,21 +17,18 @@ trait Entity extends Observing 	{
 
 	def clean:Unit = fieldList.foreach( f => f.makeClean)
 
-	def validationErrors [T <: ValidationError] : List[ValidationError] = validationErrorList ++ fieldList.flatMap( _.validationErrors)
-
-	def validatorList : List[Entity => List[ValidationError]] = Nil 
-
-	def runValidations(domainObject: Any):Unit  = validationErrorList = validatorList.flatMap(_(this))
+	override def validationErrors :List[ValidationError] = validationErrorList ++ fieldList.flatMap( _.validationErrors) 
 
 	override def equals( that :Any) = that match {
 		case entity :Entity => entity.id == this.id
 	}
 
-	def setup() {
-	fieldList.foreach( f =>  {
-		f.change foreach runValidations 
-		})
-		}
+//	protected def runValidations( dO :Any) :Unit = validate( None)
+
+/*	fieldList.foreach( f =>  {
+ 		f.change foreach runValidations 
+ 		})
+ 		*/
 }
 
 

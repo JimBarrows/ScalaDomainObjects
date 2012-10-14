@@ -11,11 +11,7 @@ import reactive.{Signal, EventStream, EventSource, Observing, CanForward, Forwar
 import ValidationMethods._
 
 
-class Field[T] extends Signal[T] {
-
-	type ValidationFunction = Option[T] => List[FieldError]
-
-	protected var validationErrorList:List[FieldError] = Nil
+class Field[T] extends Signal[T] with Validation{
 
 	protected var data:Option[T] = None
 
@@ -30,28 +26,18 @@ class Field[T] extends Signal[T] {
 	
 	def writable_? = writable
 
-	def validations:List[ValidationFunction]=Nil
-
 	def clean_? = ! dirty
 
 	def initialized_? = initialized
 
 	override def now = data.get
 
-	lazy val change: EventStream[T] = change0
-  protected lazy val change0 = new EventSource[T] 
-
-	protected def runValidations(in :Option[T]) :List[FieldError] = in match{
-		case Some(_) => validations.flatMap(_ ( in)).removeDuplicates
-		case None => Nil
-	}
-
 	def value:Option[T] = data
 
 	def assign( newValue : Option[T]) :Field[T]  = {
 		if (! data.equals( newValue) && (writable_? || ! initialized_? )) {
-			validationErrorList = runValidations( newValue)
 			data = newValue
+			validate
 			dirty = true
 			initialized=true
 			change0.fire( newValue.get)
@@ -73,13 +59,17 @@ class Field[T] extends Signal[T] {
 
 	def makeReadOnly:Unit = writable=false
 
-	def validationErrors = validationErrorList
+	lazy val change: EventStream[T] = change0
+
+  protected lazy val change0 = new EventSource[T] 
 
 	def <-->(other: Field[T])(implicit observing: Observing): this.type = {
 		this.distinct >> other
 		other.distinct >> this
 		this
   }
+
+
 }
 
 object Field {
@@ -110,11 +100,12 @@ object EntityUuidIdField {
 /** A Field consisting entirely of numbers
 */
 class NumericField extends Field[String] {
-	override def validations:List[ValidationFunction] = allNumeric _  :: Nil
+	override def validations:List[ValidationFunction] = allNumeric( this) _  :: Nil
 }
 
 object NumericField {
 
+	def apply() = new NumericField()
 	def apply( value :String) = {
 		val nf = new NumericField()
 		nf.value = (value)
@@ -131,7 +122,7 @@ object NumericField {
 /** A Field consisting entirely of alphabetic characters, and punctuation
 */
 class AlphaField extends Field[String] {
-	override def validations:List[ValidationFunction] = allAlpha _  :: Nil
+	override def validations:List[ValidationFunction] = allAlpha( this) _  :: Nil
 }
 
 /** A Field that is either true or false.
@@ -154,7 +145,7 @@ object IntegerField {
 
 /** A field that can be anything that will fit in a string, but isn't that long.*/
 class ShortTextField extends Field[String] {
-	override def validations :List[ValidationFunction] = maxLength( 140) _ :: Nil
+	override def validations :List[ValidationFunction] = maxLength( 140, this) _:: Nil
 }
 
 object ShortTextField {
@@ -183,7 +174,7 @@ class ListField[T] extends Field[ MutableList[ T]] {
 
 		if (writable_? || ! initialized_? ) {
 			l += newValue 
-			validationErrorList = runValidations(  Some(l))
+			validate
 			dirty = true
 			initialized=true
 			change0.fire( l)
@@ -193,7 +184,7 @@ class ListField[T] extends Field[ MutableList[ T]] {
 	def remove( value :T) :Unit = data = data.map( l=> {
 		if (writable_? || ! initialized_? ) {
 			val newList = l.diff( value :: Nil)	
-			validationErrorList = runValidations(  Some(l))
+			validate
 			dirty = true
 			initialized=true
 			change0.fire( newList)

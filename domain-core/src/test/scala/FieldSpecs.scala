@@ -15,7 +15,8 @@ class FieldSpecs extends Specification {
 		
 			override def validations:List[ValidationFunction] = validationCalled _ :: Nil
 
-			def validationCalled( value:Option[String]):List[FieldError] =  noErrors
+			var called = false
+			def validationCalled() :List[FieldError] =  { called = true; noErrors}
 		}
 
 		"be clean by default" in {
@@ -48,16 +49,11 @@ class FieldSpecs extends Specification {
 		}
 
 		"valdiator is called when assignment made" in {
-			var validatorWasCalled = false
 			val testField = new TestField() {
 				
-				override def validationCalled( value:Option[String]):List[FieldError] =  {
-					validatorWasCalled = true
-					noErrors
-					}
 			}
 			testField.assign(Some("this is another string"))
-			validatorWasCalled must beTrue
+			testField.called must beTrue
 		}
 
 		"field contains an empty list when validations pass" in {
@@ -68,7 +64,7 @@ class FieldSpecs extends Specification {
 		"field contains a list of errors when validations fail" in{
 			val testField = new TestField(){
 
-				override def validationCalled( value:Option[String]):List[FieldError] =  {
+				override def validationCalled( ):List[FieldError] =  {
 					TestError() :: Nil	
 					}
 

@@ -11,7 +11,7 @@ class Test( initialId :EntityUuidIdField) extends Entity{
 
 	override def descriptor = descriptorOf[Test]
 
-	val id = initialId
+	//override val id = initialId
 
 	val numeric = new NumericField()
 
@@ -21,7 +21,6 @@ class Test( initialId :EntityUuidIdField) extends Entity{
 		this.numeric :: this.alpha :: Nil
 		}
 	
-	setup()
 }
 
 object Test {
@@ -57,18 +56,18 @@ class EntitySpecs extends Specification {
 
 		"returns a list of domain errors" in {
 			val test = new Test( EntityUuidIdField()) {
-				override def validatorList : List[ Entity => List[EntityError]] = onlyOneHasValue( numeric:: alpha::Nil) _ :: Nil				
+//				override def validations : List[ ValidationFunction] = onlyOneHasValue( numeric:: alpha::Nil) _ :: Nil
 			}
 			test.numeric value = "1"
 			test.alpha value="a"
-			test.runValidations( null)
+			test.validate
 			test.validationErrors must contain (OnlyOneFieldCanHaveValue( test.numeric :: test.alpha :: Nil))
 		}
 
 		"validates itself whenever a field changes" in {
 			
 			val test = new Test( EntityUuidIdField()) {
-				override def validatorList : List[Entity => List[EntityError]] = onlyOneHasValue( numeric:: alpha::Nil) _ :: Nil				
+				//override def validations : List[ ValidationFunction] = onlyOneHasValue( numeric:: alpha::Nil) _ :: Nil				
 			}
 			test.numeric value = "1"
 			test.alpha value="a"

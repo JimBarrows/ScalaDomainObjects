@@ -78,7 +78,7 @@ class RepositorySpecs extends Specification {
 	}
 
 	class TestEntity( initNumeric :NumericField)  extends Entity {
-		val id = EntityUuidIdField()
+		//val id = EntityUuidIdField()
 		val numeric =  initNumeric
 	}
 

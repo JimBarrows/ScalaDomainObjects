@@ -13,7 +13,7 @@ class PredicateSpecs extends Specification {
 
 		override def descriptor = descriptorOf[PredicateEntity]
 
-		val id = initialId
+		//val id = initialId
 		val satisfy = new BooleanField()
 
 		override lazy val fieldList :List[Field[_]] = {
