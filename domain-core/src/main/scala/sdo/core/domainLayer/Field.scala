@@ -11,24 +11,13 @@ import reactive.{Signal, EventStream, EventSource, Observing, CanForward, Forwar
 import ValidationMethods._
 
 
-class Field[T] extends Signal[T] with Validation{
+class Field[T] extends Signal[T] with Validation with ChangeStateTracking{
 
 	protected var data:Option[T] = None
 
-	protected var dirty = false
-
-	protected var initialized = false
-
 	private var writable = true
-
-
-	def dirty_? = dirty
 	
 	def writable_? = writable
-
-	def clean_? = ! dirty
-
-	def initialized_? = initialized
 
 	override def now = data.get
 
@@ -38,8 +27,7 @@ class Field[T] extends Signal[T] with Validation{
 		if (! data.equals( newValue) && (writable_? || ! initialized_? )) {
 			data = newValue
 			validate
-			dirty = true
-			initialized=true
+			makeDirty
 			change0.fire( newValue.get)
 		} 
 		this
@@ -55,8 +43,6 @@ class Field[T] extends Signal[T] with Validation{
 		(that.getClass == this.getClass) && (that.asInstanceOf[Field[T]].value == this.value)
 	}
 
-	def makeClean:Unit = dirty=false
-
 	def makeReadOnly:Unit = writable=false
 
 	lazy val change: EventStream[T] = change0
@@ -68,7 +54,6 @@ class Field[T] extends Signal[T] with Validation{
 		other.distinct >> this
 		this
   }
-
 
 }
 
@@ -175,8 +160,7 @@ class ListField[T] extends Field[ MutableList[ T]] {
 		if (writable_? || ! initialized_? ) {
 			l += newValue 
 			validate
-			dirty = true
-			initialized=true
+			makeDirty
 			change0.fire( l)
 		} 
 	})
@@ -185,8 +169,7 @@ class ListField[T] extends Field[ MutableList[ T]] {
 		if (writable_? || ! initialized_? ) {
 			val newList = l.diff( value :: Nil)	
 			validate
-			dirty = true
-			initialized=true
+			makeDirty
 			change0.fire( newList)
 			newList
 		} else {
