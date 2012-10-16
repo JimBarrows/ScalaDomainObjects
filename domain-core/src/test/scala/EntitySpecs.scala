@@ -43,7 +43,7 @@ class EntitySpecs extends Specification {
 		"make itself clean" in {
 			val test = Test()
 			test.numeric value = "1"
-			test.clean
+			test.makeClean
 			test.dirty_? must beFalse
 		}
 
