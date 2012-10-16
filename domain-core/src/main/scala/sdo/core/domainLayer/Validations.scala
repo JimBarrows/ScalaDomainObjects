@@ -18,7 +18,7 @@ object EntityValidationMethods {
 
 	val noErrors = List[EntityError]()
 
-	def onlyOneHasValue( fields : List[ Field[ _]])(e :Option[Entity]) :List[EntityError] = 
+	def onlyOneHasValue( fields : List[ Field[ _]])() :List[EntityError] = 
 		fields.filter( f => 
 			! f.value.isEmpty ).length match {
 					case l if 0 until 2 contains l => noErrors

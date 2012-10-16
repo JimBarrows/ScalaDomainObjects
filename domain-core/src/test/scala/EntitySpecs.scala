@@ -11,15 +11,14 @@ class Test( initialId :EntityUuidIdField) extends Entity{
 
 	override def descriptor = descriptorOf[Test]
 
-	//override val id = initialId
 
 	val numeric = new NumericField()
 
 	val alpha = new AlphaField()
 
-	override lazy val fieldList : List[Field[_]] =  {
-		this.numeric :: this.alpha :: Nil
-		}
+	override def fieldList : List[Field[_]] =  this.numeric :: this.alpha :: Nil 
+
+	setup
 	
 }
 
@@ -56,7 +55,7 @@ class EntitySpecs extends Specification {
 
 		"returns a list of domain errors" in {
 			val test = new Test( EntityUuidIdField()) {
-//				override def validations : List[ ValidationFunction] = onlyOneHasValue( numeric:: alpha::Nil) _ :: Nil
+				override def validations : List[ ValidationFunction] = onlyOneHasValue( numeric:: alpha::Nil) _ :: Nil
 			}
 			test.numeric value = "1"
 			test.alpha value="a"
@@ -67,7 +66,7 @@ class EntitySpecs extends Specification {
 		"validates itself whenever a field changes" in {
 			
 			val test = new Test( EntityUuidIdField()) {
-				//override def validations : List[ ValidationFunction] = onlyOneHasValue( numeric:: alpha::Nil) _ :: Nil				
+				override def validations : List[ ValidationFunction] = onlyOneHasValue( numeric:: alpha::Nil) _ :: Nil				
 			}
 			test.numeric value = "1"
 			test.alpha value="a"

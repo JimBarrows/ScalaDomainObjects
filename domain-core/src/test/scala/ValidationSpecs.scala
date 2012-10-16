@@ -93,20 +93,20 @@ class ValidationSpecs extends Specification {
 		"validate that when no fields have value onlyOneHasValue has no errors" in {
 			val field1 = new NumericField()
 			val field2 = new AlphaField()
-			onlyOneHasValue( field1 :: field2 :: Nil)(None) must be empty
+			onlyOneHasValue( field1 :: field2 :: Nil)() must be empty
 		}
 		"validate that when one field has value onlyOneHasValue has no errors" in {
 			val field1 = new NumericField()
 			val field2 = new AlphaField()
 			field1.value = "1"
-			onlyOneHasValue( field1 :: field2 :: Nil)(None) must be empty
+			onlyOneHasValue( field1 :: field2 :: Nil)() must be empty
 		}
 		"validate that when all fields have value onlyOneHasValue returns OnlyOneFieldCanHaveValue( fieldList)" in {
 			val field1 = new NumericField()
 			val field2 = new AlphaField()
 			field1.value = "1"
 			field2.value = "a"
-			onlyOneHasValue( field1:: field2::Nil)(None) must contain( OnlyOneFieldCanHaveValue( field1 :: field2 :: Nil))
+			onlyOneHasValue( field1:: field2::Nil)() must contain( OnlyOneFieldCanHaveValue( field1 :: field2 :: Nil))
 		}
 	}
 }
