@@ -39,7 +39,7 @@ trait ChangeStateTracking {
 
 	protected var state = ChangeState.uninitialized
 	def dirty_? :Boolean = state == ChangeState.dirty
-	def clean_? :Boolean = state == ChangeState.clean
+	def clean_? :Boolean = (state == ChangeState.clean || state == ChangeState.uninitialized)
 	def initialized_? :Boolean = state != ChangeState.uninitialized
 
 	def makeClean { state = ChangeState.clean}
