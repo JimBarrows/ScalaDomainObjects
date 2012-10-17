@@ -11,6 +11,8 @@ class PredicateSpecs extends Specification {
 
 	class PredicateEntity( initialId :EntityUuidIdField) extends Entity {
 
+		override val id = initialId
+
 		override def descriptor = descriptorOf[PredicateEntity]
 
 		//val id = initialId

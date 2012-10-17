@@ -192,6 +192,15 @@ class FieldSpecs extends Specification {
 			val uuid = EntityUuidIdField()
 			uuid.value must beSome
 		}
+
+		"A uuid field must be equal to itself" in {
+			val uuid = EntityUuidIdField()
+			uuid must be_==( uuid)
+		}
+
+		"The apply method should return different UUID values" in {
+			EntityUuidIdField() must not be_==(EntityUuidIdField())
+		}
 	}
 
 	"An integer field" should {

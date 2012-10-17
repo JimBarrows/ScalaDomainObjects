@@ -7,7 +7,7 @@ import reactive.Observing
 */
 trait Entity extends Observing with Validation	with ChangeStateTracking{
 
-	val id = EntityUuidIdField
+	val id :EntityUuidIdField
 
 	def descriptor =  descriptorOf[Entity]
 

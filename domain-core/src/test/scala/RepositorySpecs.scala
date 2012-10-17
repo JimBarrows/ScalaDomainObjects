@@ -14,31 +14,32 @@ class RepositorySpecs extends Specification {
 		}
 
 		"find none if an enitty with the id isn't found" in {
-			repo.find( EntityUuidIdField) must beNone
+			val id = EntityUuidIdField
+			repo.find( id) must beNone
 		}
 
 		"return the first entity that meets a predicate" in {
 
-			repo.find( fidnNumericEqualTo2) must beSome.which( _.id == te2.id)
+			repo.find( findNumericEqualTo2) must beSome.which( _.id == te2.id)
 			
 		}
 
 		"return a list of entities that meets a predicate" in {
 
-			repo.filter( fidnNumericEqualTo2) must contain (te2, te3)
+			repo.filter( findNumericEqualTo2) must contain (te2, te3)
 		}
 
 		"return a list of entities that do not satisfy a predicate" in {
 
-			repo.filterNot( fidnNumericEqualTo2) must contain (te1)
+			repo.filterNot( findNumericEqualTo2) must contain (te1)
 		}
 
 		"determine if at least one entity satisfied a predicate" in {
-			repo.exists( fidnNumericEqualTo2) must beTrue
+			repo.exists( findNumericEqualTo2) must beTrue
 		}
 
 		"count how many entities satisfy a predicate" in {
-			repo.count( fidnNumericEqualTo2) must_== 2
+			repo.count( findNumericEqualTo2) must_== 2
 		}
 	}
 
@@ -78,7 +79,7 @@ class RepositorySpecs extends Specification {
 	}
 
 	class TestEntity( initNumeric :NumericField)  extends Entity {
-		//val id = EntityUuidIdField()
+		override val id = EntityUuidIdField()
 		val numeric =  initNumeric
 	}
 
@@ -89,7 +90,7 @@ class RepositorySpecs extends Specification {
 	val te5 = new TestEntity( NumericField(6))
 	val te6 = new TestEntity( NumericField(6))
 
-	val fidnNumericEqualTo2 = new Predicate[TestEntity] () {
+	val findNumericEqualTo2 = new Predicate[TestEntity] () {
 		override def isSatisfiedBy( candidate :TestEntity) = {
 			candidate.numeric ==  NumericField(2)
 		}

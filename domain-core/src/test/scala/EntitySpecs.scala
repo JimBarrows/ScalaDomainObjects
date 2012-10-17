@@ -9,8 +9,9 @@ import sdo.core.domain.EntityValidationMethods.onlyOneHasValue
 
 class Test( initialId :EntityUuidIdField) extends Entity{
 
-	override def descriptor = descriptorOf[Test]
+	override val id = initialId
 
+	override def descriptor = descriptorOf[Test]
 
 	val numeric = new NumericField()
 

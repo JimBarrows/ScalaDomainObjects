@@ -79,7 +79,10 @@ class EntityUuidIdField( val id :UUID) extends EntityIdField[UUID]( id) {
 }
 
 object EntityUuidIdField {
-	def apply() :EntityUuidIdField = new EntityUuidIdField( UUID.randomUUID())
+	def apply() :EntityUuidIdField = {
+		val i = UUID.randomUUID()
+		new EntityUuidIdField( i)//UUID.randomUUID())
+	}
 }
 
 /** A Field consisting entirely of numbers
