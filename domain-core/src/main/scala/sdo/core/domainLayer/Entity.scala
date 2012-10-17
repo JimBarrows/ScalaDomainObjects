@@ -5,7 +5,7 @@ import reactive.Observing
 
 /**  An object not fundamentally defined by it's attributes, but rather by a thread of continuity and identity
 */
-trait Entity extends Observing with Validation	with ChangeStateTracking{
+trait Entity extends Observing with Validation[Entity]	with ChangeStateTracking{
 
 	val id :EntityUuidIdField
 

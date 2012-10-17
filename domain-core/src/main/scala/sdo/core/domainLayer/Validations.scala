@@ -8,7 +8,7 @@ trait EntityError extends ValidationError
 
 case class CannotBeAllZeros( badValue:String) extends FieldError
 case class CannotContain666( badValue:String) extends FieldError
-case class CannotBeLongerThan( length:Integer, badValue:String) extends FieldError
+case class CannotBeLongerThan( length:BigInt, badValue:String) extends FieldError
 case class LessThanMinimum( minimum :BigInt, badValue :BigInt) extends FieldError
 case class MustBeNumeric( badValue :String) extends FieldError
 case class MustBeAlpha( badValue :String) extends FieldError
@@ -18,7 +18,7 @@ object EntityValidationMethods {
 
 	val noErrors = List[EntityError]()
 
-	def onlyOneHasValue( fields : List[ Field[ _]])() :List[EntityError] = 
+	def onlyOneHasValue( fields : List[ Field[ _]])( e :Entity ) :List[EntityError] = 
 		fields.filter( f => 
 			! f.value.isEmpty ).length match {
 					case l if 0 until 2 contains l => noErrors
@@ -34,37 +34,34 @@ object ValidationMethods {
 	val triple6 = """^666$""".r
 	val noErrors = List[FieldError]()
 
-	def allNumeric( field : Field[ String]) ( ) : List[FieldError] = 
-		field.value.map( v => numericStringRegex findFirstIn v match {
+	def allNumeric( value : Option[String]) :List[FieldError] = 
+		value.map( v => numericStringRegex findFirstIn v match {
 			case Some(f) => noErrors
 			case None => MustBeNumeric( v) :: Nil
 		}).getOrElse( noErrors)
 
-	def allAlpha( field : Field[ String]) ( ) : List[FieldError] = 
-		field.value.map( v => alphaStringRegex findFirstIn v match {
+	def allAlpha( value :Option[String]) : List[FieldError] = 
+		value.map( v => alphaStringRegex findFirstIn v match {
 			case Some(f) => noErrors
 			case None => MustBeAlpha( v) :: Nil
 		}).getOrElse( noErrors)
 
-	def notAllZeros( field : Field[  String]) ( ):List[FieldError] = 
-		field.value.map( v => allZerosRegex findFirstIn v match {
+	def notAllZeros( value :Option[String]) :List[FieldError] = 
+		value.map( v => allZerosRegex findFirstIn v match {
 			case Some(f) => CannotBeAllZeros( f) :: Nil
 			case None => noErrors
 	}).getOrElse( noErrors)
 
-	def not666( field : Field[  String]) ( ):List[FieldError] = 
-		field.value.map( v => ValidationMethods.triple6 findFirstIn v match {
+	def not666( value :Option[String]) :List[FieldError] = 
+		value.map(ValidationMethods.triple6 findFirstIn _ match {
 			case Some(f) => CannotContain666( f) :: Nil
 			case None => noErrors
 	}).getOrElse( noErrors)
 
-	def maxLength(length:Integer, field :Field[  String]) ( ) :List[FieldError] = 
-		field.value.map( v => 
-			if (v.length > length) 
-				CannotBeLongerThan( length, v) :: Nil 
-			else noErrors ).getOrElse( noErrors)
+	def maxLength(length :BigInt) (value :Option[String]) :List[FieldError] = 
+			value.map( v => if (v.length > length) CannotBeLongerThan( length, v) :: Nil else noErrors).getOrElse( noErrors)
 
-	def minimum( minimum :BigInt, field :IntegerField) :List[FieldError] =
-		field.value.map( v => if (v < minimum) LessThanMinimum( minimum, field.value.get) :: Nil else noErrors).getOrElse( noErrors)
+	def minimum( minimum :BigInt) (value :Option[BigInt]) :List[FieldError] =
+		value.map( v => if (v < minimum) LessThanMinimum( minimum, v) :: Nil else noErrors).getOrElse( noErrors)
 
 }

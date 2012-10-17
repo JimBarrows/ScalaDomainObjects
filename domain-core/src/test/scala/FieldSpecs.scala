@@ -16,7 +16,7 @@ class FieldSpecs extends Specification {
 			override def validations:List[ValidationFunction] = validationCalled _ :: Nil
 
 			var called = false
-			def validationCalled() :List[FieldError] =  { called = true; noErrors}
+			def validationCalled( testField :Option[String]) :List[FieldError] =  { called = true; noErrors}
 		}
 
 		"be clean by default" in {
@@ -64,7 +64,7 @@ class FieldSpecs extends Specification {
 		"field contains a list of errors when validations fail" in{
 			val testField = new TestField(){
 
-				override def validationCalled( ):List[FieldError] =  {
+				override def validationCalled( f :Option[String]):List[FieldError] =  {
 					TestError() :: Nil	
 					}
 

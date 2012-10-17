@@ -11,7 +11,7 @@ import reactive.{Signal, EventStream, EventSource, Observing, CanForward, Forwar
 import ValidationMethods._
 
 
-class Field[T] extends Signal[T] with Validation with ChangeStateTracking{
+class Field[T] extends Signal[T] with Validation[Option[T]] with ChangeStateTracking{
 
 	protected var data:Option[T] = None
 
@@ -20,6 +20,8 @@ class Field[T] extends Signal[T] with Validation with ChangeStateTracking{
 	def writable_? = writable
 
 	override def now = data.get
+
+	override def validate :Unit = validationErrorList = validations.flatMap( v => v(data))
 
 	def value:Option[T] = data
 
@@ -88,7 +90,7 @@ object EntityUuidIdField {
 /** A Field consisting entirely of numbers
 */
 class NumericField extends Field[String] {
-	override def validations:List[ValidationFunction] = allNumeric( this) _  :: Nil
+	override def validations:List[ValidationFunction] = allNumeric _  :: Nil
 }
 
 object NumericField {
@@ -110,7 +112,7 @@ object NumericField {
 /** A Field consisting entirely of alphabetic characters, and punctuation
 */
 class AlphaField extends Field[String] {
-	override def validations:List[ValidationFunction] = allAlpha( this) _  :: Nil
+	override def validations:List[ValidationFunction] = allAlpha _  :: Nil
 }
 
 /** A Field that is either true or false.
@@ -133,7 +135,7 @@ object IntegerField {
 
 /** A field that can be anything that will fit in a string, but isn't that long.*/
 class ShortTextField extends Field[String] {
-	override def validations :List[ValidationFunction] = maxLength( 140, this) _:: Nil
+	override def validations :List[ValidationFunction] = maxLength( 140) _:: Nil
 }
 
 object ShortTextField {

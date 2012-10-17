@@ -13,15 +13,15 @@ import ValidationMethods._
 
 /**Provides a common interface for validating an object.
 */
-trait Validation {
+trait Validation[ T] {
 
-	type ValidationFunction = () => List[ValidationError]
+	type ValidationFunction = (T) => List[ValidationError]
 
 	protected var validationErrorList :List[ValidationError] = Nil
 
 	def validations :List[ValidationFunction] = Nil
 
-	def validate :Unit =  validationErrorList = validations.flatMap( _() ).removeDuplicates
+	def validate :Unit =  validationErrorList = validations.flatMap( v => v( this.asInstanceOf[T]) ).removeDuplicates
 	
 	def validationErrors = validationErrorList
 }

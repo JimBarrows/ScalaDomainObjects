@@ -56,7 +56,7 @@ class EntitySpecs extends Specification {
 
 		"returns a list of domain errors" in {
 			val test = new Test( EntityUuidIdField()) {
-				override def validations : List[ ValidationFunction] = onlyOneHasValue( numeric:: alpha::Nil) _ :: Nil
+				override def validations : List[ ValidationFunction] = onlyOneHasValue( numeric :: alpha :: Nil) _ :: Nil
 			}
 			test.numeric value = "1"
 			test.alpha value="a"
