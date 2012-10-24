@@ -17,8 +17,8 @@ trait Entity extends Observing with Validation[Entity]	with ChangeStateTracking{
 	  * which is not what we want, so we have to delay the setup of the obsersvers.
 	  */
 	def setup { 
-		fieldList.foreach( field =>  field.change foreach runValidations )
-		fieldList.foreach( field => field.change foreach updateChangeState)
+		fieldList.foreach( field => if( field != null) field.change foreach runValidations )
+		fieldList.foreach( field => if( field != null) field.change foreach updateChangeState)
 	}
 
 	override def makeClean:Unit = {

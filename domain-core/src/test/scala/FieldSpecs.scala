@@ -168,6 +168,14 @@ class FieldSpecs extends Specification {
 			val numeric = new NumericField()
 			numeric.assign(Some(" 1 ")).validationErrors must not be empty
 		}
+
+		"Be able to put together a list of different subtypes" in {
+			val scheduledAt = new DateTimeField()
+			val successfulOutcome = new TextField()
+
+			List( scheduledAt, successfulOutcome) must contain( scheduledAt, successfulOutcome)
+
+		}
 	}
 
 	"An alpha field " should {
