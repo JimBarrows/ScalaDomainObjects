@@ -7,7 +7,9 @@ import java.util.UUID
 import org.scala_tools.time.Imports._
 import org.joda.time.DateMidnight
 
-import reactive.{Signal, EventStream, EventSource, Observing, CanForward, Forwardable, NamedFunction}
+import reactive.{Signal, EventStream, EventSource, Observing, CanForward, Forwardable, NamedFunction }
+import reactive.CanForward.vari
+import reactive.CanForward.eventSource
 import ValidationMethods._
 
 
@@ -31,6 +33,7 @@ class Field[T] extends Signal[T] with Validation[Option[T]] with ChangeStateTrac
 			validate
 			makeDirty
 			change0.fire( newValue.get)
+			//distinct.foreach( c => c.fire( newValue.get))
 		} 
 		this
 	}

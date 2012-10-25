@@ -82,7 +82,14 @@ class EntitySpecs extends Specification {
 
 				override def fieldList :List[ Field[ _]] = super.fieldList ++ List( scheduledAt, successfulOutcome)
 
-				setup
+			}
+
+			object Foo {
+				def apply() = {
+					val f = new Foo( EntityUuidIdField()) 
+					f.setup
+					f
+				}
 			}
 
 			class Bar( initialId :EntityUuidIdField) extends Foo( initialId) {
@@ -96,12 +103,20 @@ class EntitySpecs extends Specification {
 					validate
 				}
 
-				setup
 			}
 
-			val b = new Bar( EntityUuidIdField())
+			object Bar {
+				def apply() = {
+					val f = new Bar( EntityUuidIdField()) 
+					f.setup
+					f
+				}
+			}
 
-			b.nicky value = "hello"
+
+			val b = Bar( )
+
+			b.successfulOutcome value = "hello"
 
 			callCount must be_== (1)
 		}
