@@ -143,6 +143,7 @@ class ShortTextField extends Field[String] {
 
 object ShortTextField {
 	def apply( text :String) = new ShortTextField() value = text
+	def apply( ) = new ShortTextField()
 }
 
 /**A field that represents notes and other large text.*/
