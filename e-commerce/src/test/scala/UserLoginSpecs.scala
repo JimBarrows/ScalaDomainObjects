@@ -1,13 +1,17 @@
 package sdo.ecommerce.specs
 
+import java.util.Locale
+
 import org.specs2.mutable._
 
 import org.scala_tools.time.Imports._
 
 import org.apache.commons.codec.digest.DigestUtils._
 
-import sdo.ecommerce.domain.UserLogin
+import sdo.ecommerce.domain._
+
 import sdo.ecommerce.domain.AccountStatusType._
+
 class UserLoginSpecs extends Specification {
 
 	"A User Login" should {
@@ -27,6 +31,33 @@ class UserLoginSpecs extends Specification {
 		"start in unverified status when created" in {
 			val ul = UserLogin( "username", "password")
 			ul.accountStatus.value must beSome( unverified)
+		}
+
+		"can have preferences added to it" in {
+			val ul = UserLogin( "username", "password")
+			val wup = LocalePreference( "language", Locale.US)
+			ul.add( wup)
+			ul.preferences must contain( wup)
+		}
+
+		"can retrieve a preference" in {
+			val ul = UserLogin( "username", "password")
+			val wup = LocalePreference( "language", Locale.US)
+			val wup2 = LocalePreference( "currency", Locale.CANADA)
+			ul.add( wup)
+			ul.add( wup2)
+		
+			ul.find( "language") must beSome( wup)
+		}
+
+		"can update a preference" in {
+			val ul = UserLogin( "username", "password")
+			val wup = LocalePreference( "language", Locale.US)
+			val wup2 = LocalePreference( "language", Locale.CANADA)
+			ul.add( wup)
+
+			ul.change( wup2)
+			ul.find( "language") must beSome( LocalePreference( "language", Locale.CANADA))
 		}
 
 

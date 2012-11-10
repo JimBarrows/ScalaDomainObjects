@@ -33,7 +33,6 @@ class Field[T] extends Signal[T] with Validation[Option[T]] with ChangeStateTrac
 			validate
 			makeDirty
 			change0.fire( newValue.get)
-			//distinct.foreach( c => c.fire( newValue.get))
 		} 
 		this
 	}
@@ -60,6 +59,7 @@ class Field[T] extends Signal[T] with Validation[Option[T]] with ChangeStateTrac
 		this
   }
 
+	override def toString = "Field[T]( %s)".format( data)
 }
 
 object Field {
@@ -81,12 +81,13 @@ class EntityIdField[T]( id :T) extends Field[T] {
 }
 
 class EntityUuidIdField( val id :UUID) extends EntityIdField[UUID]( id) {
+	override def toString = "EntityUuidIdField( %s)".format( data)
 }
 
 object EntityUuidIdField {
 	def apply() :EntityUuidIdField = {
 		val i = UUID.randomUUID()
-		new EntityUuidIdField( i)//UUID.randomUUID())
+		new EntityUuidIdField( i)
 	}
 }
 
@@ -94,6 +95,7 @@ object EntityUuidIdField {
 */
 class NumericField extends Field[String] {
 	override def validations:List[ValidationFunction] = allNumeric _  :: Nil
+	override def toString = "NumericField( %s)".format( data)
 }
 
 object NumericField {
@@ -116,16 +118,19 @@ object NumericField {
 */
 class AlphaField extends Field[String] {
 	override def validations:List[ValidationFunction] = allAlpha _  :: Nil
+	override def toString = "AlphaField( %s)".format( data)
 }
 
 /** A Field that is either true or false.
 */
 class BooleanField extends Field[Boolean] {
+	override def toString = "BooleanField( %s)".format( data)
 }
 
 /** A class representing the mathematical concept of Integers.
 */
 class IntegerField extends Field[BigInt] {
+	override def toString = "IntegerField( %s)".format( data)
 }
 
 object IntegerField {
@@ -139,15 +144,17 @@ object IntegerField {
 /** A field that can be anything that will fit in a string, but isn't that long.*/
 class ShortTextField extends Field[String] {
 	override def validations :List[ValidationFunction] = maxLength( 140) _:: Nil
+	override def toString = "ShortTextField( %s)".format( data)
 }
 
 object ShortTextField {
-	def apply( text :String) = new ShortTextField() value = text
+	def apply( text :String) = (new ShortTextField().value = text).asInstanceOf[ShortTextField]
 	def apply( ) = new ShortTextField()
 }
 
 /**A field that represents notes and other large text.*/
 class TextField extends Field[String] {
+	override def toString = "TextField( %s)".format( data)
 }
 
 object TextField {
@@ -155,6 +162,7 @@ object TextField {
 }
 
 class DateTimeField extends Field[DateTime] {
+	override def toString = "DateTimeField( %s)".format( data)
 }
 
 class DateField extends Field[DateMidnight] {
@@ -186,4 +194,5 @@ class ListField[T] extends Field[ MutableList[ T]] {
 		}
 	})
 
+	override def toString = "ListField( %s)".format( data)
 }

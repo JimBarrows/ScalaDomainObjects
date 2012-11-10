@@ -1,5 +1,7 @@
 package sdo.ecommerce.domain
 
+import java.util.Locale
+
 import org.apache.commons.codec.digest.DigestUtils._
 
 import sdo.core.domain.{Entity, Field, EntityUuidIdField, TextField, ShortTextField, ValueObject}
@@ -11,9 +13,21 @@ class UserLogin( initialId :EntityUuidIdField) extends Entity {
 	val username = ShortTextField()
 	val password = PasswordField()
 	val accountStatus = AccountStatusField()
-	val preferences :List[ WebUserPreferences[ _]] = Nil
+	private var _preferences :List[ WebUserPreference[ _]] = Nil
 
 	override def fieldList :List[ Field[ _]] = List( username, password)
+
+	def preferences =  _preferences
+
+	def add( wup :WebUserPreference[ _]) {_preferences  = wup :: _preferences}
+
+	def find( name :String) :Option[WebUserPreference[ _]] = _preferences.find( p => p.name.value == Some(name)) 
+
+	def change( newValue :WebUserPreference[ _]) ={
+		val oldValue = find( newValue.name.value.getOrElse(""))
+		_preferences = _preferences diff List( oldValue)
+		add( newValue)
+	}
 }
 
 object UserLogin {
@@ -44,7 +58,6 @@ class PasswordField extends TextField {
 		if (! data.equals( newValue) && (writable_? || ! initialized_? )) {
 
 			val salt = "r_Z4$ko-NdxM[_S?:Zgwz hdOfO9={"
-//			val encryptedVal :String = sha512Hex(  nv + salt)
 
 			data = newValue.map( nv => sha512Hex( nv + salt))
 			validate
@@ -85,6 +98,28 @@ object AccountStatusField {
 	}
 }
 
-class WebUserPreferences[T <: Field[ _]] ( name :ShortTextField, value :T) extends ValueObject {
-	override def fieldList :List[ Field[ _]] = List( name, value)
+class LocaleField extends Field[ Locale] {
+	override def toString = "LocaleField( %s)".format( data)
+}
+
+object LocaleField {
+	
+	def apply( locale :Locale) = (new LocaleField value = locale).asInstanceOf[LocaleField]
+
+}
+
+class WebUserPreference[T <: Field[ _]] ( initialName :ShortTextField, initialValue :T) extends ValueObject {
+	def name :ShortTextField = initialName
+	def value :T = initialValue
+	override def fieldList :List[ Field[ _]] = List( initialName, initialValue)
+	override def toString = "WebUserPreference( name= %s, value= %s)".format( name, value)
+}
+
+class LocalePreference( name :ShortTextField, value :LocaleField) extends WebUserPreference[ LocaleField]( name, value) {
+	override def toString = "LocalePreference( name= %s, value= %s)".format( name, value)
+}
+
+object LocalePreference {
+	
+	def apply( name :String, locale :Locale) = new LocalePreference( ShortTextField( name), LocaleField( locale)).asInstanceOf[LocalePreference]
 }
