@@ -196,3 +196,12 @@ class ListField[T] extends Field[ MutableList[ T]] {
 
 	override def toString = "ListField( %s)".format( data)
 }
+
+case class DateRange( from :DateMidnight, thru :Option[DateMidnight])
+case class DateTimeRange( from :DateTime, thru :Option[DateTime])
+
+class DateRangeField extends Field[ DateRange] {
+}
+
+class DateTimeRangeField extends Field[ DateTimeRange] {
+}

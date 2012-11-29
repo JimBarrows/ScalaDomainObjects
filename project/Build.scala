@@ -13,5 +13,5 @@ object ScalaDomainObjectsBuild extends Build {
    		base = file("people-and-organizations")) dependsOn( domainCore)
 
    	lazy val eCommerce = Project( id="e-commerce",
-   		base = file("e-commerce")) dependsOn( domainCore)
+   		base = file("e-commerce")) dependsOn( domainCore, peopleAndOrganizations)
 }

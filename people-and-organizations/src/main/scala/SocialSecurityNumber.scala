@@ -17,11 +17,12 @@ class AreaNumber extends SsnNumber {
 
 	override def validations:List[ValidationFunction] = super.validations ::: not666 _ :: maxLength (3) _ :: notBetween734And749 _ :: notOver772 _  :: Nil
 
-	def notBetween734And749( value : Option[String]):List[FieldError] = 
+	def notBetween734And749( value : Option[String]):List[FieldError] = {
 		value.map( v => """^7[34][4-9]$""".r findFirstIn v match {
 			case Some(f) => AreaCannotBeBetween734And749( f) :: Nil
 			case None => noErrors
 		}).getOrElse( noErrors)
+		}
 
 	def notOver772( value : Option[String]):List[FieldError] = 
 		value.map( v => """^[8-9][8-9][3-9]$""".r findFirstIn v match {
@@ -76,7 +77,11 @@ sealed case class SSN ( area:Option[AreaNumber], group:Option[GroupNumber], seri
 
 class SocialSecurityNumberField extends Field[SSN] {
 
-	override def validations:List[ValidationFunction] = not987_65_4320To987_65_4329 _ :: Nil
+	override def validations:List[ValidationFunction] = {
+		var errors = not987_65_4320To987_65_4329 _ :: Nil
+//		errors = value.map( a => a.area.map( v => v.validations)).getOrElse( Nil)
+		errors
+		}
 
 	def not987_65_4320To987_65_4329 ( value : Option[SSN]):List[FieldError] = 
 		value.map( v => v match {

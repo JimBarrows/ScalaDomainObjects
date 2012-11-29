@@ -12,7 +12,9 @@ class UserLogin( initialId :EntityUuidIdField) extends Entity {
 
 	val username = ShortTextField()
 	val password = PasswordField()
+	val webAddress = WebAddress()
 	val accountStatus = AccountStatusField()
+
 	private var _preferences :List[ WebUserPreference[ _]] = Nil
 
 	override def fieldList :List[ Field[ _]] = List( username, password)
@@ -35,13 +37,15 @@ object UserLogin {
 	def apply() = {
 		val ul = new UserLogin( EntityUuidIdField())
 		ul.setup
+		ul
 		}
 
-	def apply( username :String, password :String) = {
+	def apply( username :String, password :String, url :Url) = {
 		val ul = new UserLogin( EntityUuidIdField())
 		ul.setup
-		ul.username.value_=( username)
-		ul.password.value_=( password)
+		ul.username.value =( username)
+		ul.password.value =( password)
+		ul.webAddress.url.value =( url)
 		ul
 		}
 
@@ -123,3 +127,4 @@ object LocalePreference {
 	
 	def apply( name :String, locale :Locale) = new LocalePreference( ShortTextField( name), LocaleField( locale)).asInstanceOf[LocalePreference]
 }
+

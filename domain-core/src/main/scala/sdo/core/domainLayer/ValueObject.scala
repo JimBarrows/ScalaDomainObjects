@@ -7,10 +7,14 @@ trait ValueObject {
 
 	def fieldList : List[Field[_]] = Nil
 
-	fieldList.foreach( field => field.makeReadOnly)
+	def setup {
+		fieldList.foreach( field => field.makeReadOnly)
+	}
 
 	override def equals( that :Any) = that  match {
 		case vo :ValueObject => (vo.getClass == getClass) && (vo.fieldList == fieldList)
 		case _ => false
 	}
 }
+
+

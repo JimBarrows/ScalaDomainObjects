@@ -3,7 +3,7 @@ package sdo.core.domain
 /**Represents all objects fo a certain type as a conceptual set.  It acts like a collection,
 except with more elaborate querying capability.  Handles the transition to and from storage.
 */
-trait Repository[T] {
+trait Repository[T, E] {
 
 	/** An option containing the first element in the repository that matches the id. */
 	def find[E <: EntityIdField[_]]( id : E) :Option[T]
