@@ -10,7 +10,6 @@ import org.apache.commons.codec.digest.DigestUtils._
 
 import sdo.core.domain._
 import sdo.ecommerce.domain._
-import sdo.ecommerce.repositories._
 
 class UserLoginRepositorySpecs extends Specification {
 

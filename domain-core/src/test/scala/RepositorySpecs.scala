@@ -108,7 +108,7 @@ class RepositorySpecs extends Specification {
 		}
 	}
 
-	class Repo extends Repository[TestEntity] {
+	class Repo extends Repository[TestEntity, EntityUuidIdField] {
 
 		var list :List[TestEntity] = te1 :: te2 :: te3 :: Nil
 
@@ -128,7 +128,7 @@ class RepositorySpecs extends Specification {
 
 	}
 
-	class WritableRepo extends Repository[TestEntity] with WritableRepository[TestEntity] {
+	class WritableRepo extends Repository[TestEntity, EntityUuidIdField] with WritableRepository[TestEntity] {
 
 		var list :List[TestEntity] = te1 :: te2 :: te3 :: Nil
 
@@ -154,7 +154,7 @@ class RepositorySpecs extends Specification {
 
 	}
 	
-	class DesctructibleRepo extends Repository[TestEntity] with DestructibleRepository[TestEntity] {
+	class DesctructibleRepo extends Repository[TestEntity, EntityUuidIdField] with DestructibleRepository[TestEntity] {
 
 		var list :List[TestEntity] = te1 :: te2 :: te3 :: te4 :: te5 :: te6 :: Nil
 

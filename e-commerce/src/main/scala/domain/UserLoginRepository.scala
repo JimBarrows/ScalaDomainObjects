@@ -2,7 +2,6 @@ package sdo.ecommerce.domain
 
 import sdo.core.domain.AndPredicate
 import sdo.core.domain.{Repository, WritableRepository, Predicate, EntityUuidIdField }
-import sdo.ecommerce.domain.{UserLogin, Url}
 
 class UserLoginRepository extends Repository[ UserLogin, EntityUuidIdField] with WritableRepository[ UserLogin] {
 
