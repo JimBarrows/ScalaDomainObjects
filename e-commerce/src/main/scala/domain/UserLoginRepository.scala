@@ -1,4 +1,4 @@
-package sdo.ecommerce.repositories
+package sdo.ecommerce.domain
 
 import sdo.core.domain.AndPredicate
 import sdo.core.domain.{Repository, WritableRepository, Predicate, EntityUuidIdField }
