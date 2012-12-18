@@ -9,7 +9,9 @@ libraryDependencies ++= Seq("org.specs2" %% "specs2" % "1.12" % "test",
 		"org.scalastuff" % "scalabeans" % "0.3",
 		"org.scalaj" %% "scalaj-time" % "0.6",
 		"commons-codec" % "commons-codec" % "1.6",
-		"domain-core" %% "domain-core" % "0.1.0-SNAPSHOT"
+		"domain-core" %% "domain-core" % "0.1.0-SNAPSHOT",
+		"com.h2database" % "h2" % "1.3.166" ,
+		"com.typesafe" %% "slick" % "0.11.2"
 		)
   
 
