@@ -4,12 +4,12 @@ import scala.math.BigInt
 import scala.collection.mutable.MutableList
 import java.util.UUID
 
-import org.scala_tools.time.Imports._
+import com.github.nscala_time.time.Imports._
 import org.joda.time.DateMidnight
 
-import reactive.{Signal, EventStream, EventSource, Observing, CanForward, Forwardable, NamedFunction }
-import reactive.CanForward.vari
-import reactive.CanForward.eventSource
+import reactive.{Signal, EventStream, EventSource, Observing, CanForwardTo, Forwardable, NamedFunction }
+import reactive.CanForwardTo.vari
+import reactive.CanForwardTo.eventSource
 import ValidationMethods._
 
 
@@ -64,13 +64,11 @@ class Field[T] extends Signal[T] with Validation[Option[T]] with ChangeStateTrac
 
 object Field {
 
-	implicit def vari[T]: CanForward[Field[T], T] = new CanForward[Field[T], T] {
-		def forward(s: Forwardable[T], t: => Field[T])(implicit o: Observing) = 
-			s foreach NamedFunction(">>"+t.debugName)(t.update)
+	implicit def vari[T]: CanForwardTo[Field[T], T] = new CanForwardTo[Field[T], T] {
+		def forwarder(t: => Field[T]) = NamedFunction(">>"+t.debugName)(t.update)
   }
-	implicit def eventSource[T]: CanForward[EventSource[T], T] = new CanForward[EventSource[T], T] {
-		def forward(s: Forwardable[T], t: => EventSource[T])(implicit o: Observing) = 
-			s foreach NamedFunction(">>"+t.debugString)(t.fire)
+	implicit def eventSource[T]: CanForwardTo[EventSource[T], T] = new CanForwardTo[EventSource[T], T] {
+		def forwarder(t: => EventSource[T]) = NamedFunction(">>"+t.debugString)(t.fire)
   }
 }
 
