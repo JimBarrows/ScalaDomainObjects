@@ -49,7 +49,7 @@ object UserLogin {
 		ul
 		}
 
-	def apply( initialId :EntityUuidIdField) {
+	def apply( initialId :EntityUuidIdField) = {
 		val ul = new UserLogin( initialId)
 		ul.setup
 		ul
