@@ -63,7 +63,7 @@ class Field[T] extends Signal[T] with Validation[Option[T]] with ChangeStateTrac
 }
 
 object Field {
-
+ 
 	implicit def vari[T]: CanForwardTo[Field[T], T] = new CanForwardTo[Field[T], T] {
 		def forwarder(t: => Field[T]) = NamedFunction(">>"+t.debugName)(t.update)
   }
@@ -157,10 +157,16 @@ class TextField extends Field[String] {
 
 object TextField {
 	def apply( text :String) :TextField = new TextField().value_=(text).asInstanceOf[TextField]
+	def apply() :TextField = new TextField()
 }
 
 class DateTimeField extends Field[DateTime] {
 	override def toString = "DateTimeField( %s)".format( data)
+}
+
+object DateTimeField {
+	def apply( newDateTime :DateTime) :DateTimeField = new DateTimeField().value_=(newDateTime).asInstanceOf[DateTimeField]
+	def apply() :DateTimeField = new DateTimeField()
 }
 
 class DateField extends Field[DateMidnight] {

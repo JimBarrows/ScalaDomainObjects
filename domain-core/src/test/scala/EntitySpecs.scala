@@ -1,5 +1,6 @@
 package sdo.specs
 
+import com.github.nscala_time.time.Imports._
 import org.specs2.mutable.Specification
 import org.specs2.execute.Pending
 import org.scalastuff.scalabeans.Preamble._
@@ -36,9 +37,13 @@ class EntitySpecs extends Specification {
 		}
 
 		"the list of fields should handle very field type" in {
+			
+			val dateTimeField = DateTimeField( DateTime.now)
+			val textField = TextField("foo")
+
 			class Foo extends Entity {
-				val scheduledAt = new DateTimeField()
-				val successfulOutcome = new TextField()
+				val scheduledAt = dateTimeField
+				val successfulOutcome = textField
 
 
 				override val id = EntityUuidIdField()
@@ -46,12 +51,12 @@ class EntitySpecs extends Specification {
 
 				}
 
-			new Foo().fieldList must contain( new DateTimeField(), new TextField())
+			new Foo().fieldList must contain( allOf( dateTimeField, textField))
 			
 		}
 
 		"setup shouldn't try to process null pointers" in {
-			class Foo( initialId :EntityUuidIdField) extends Test( initialId) {
+		 class Foo( initialId :EntityUuidIdField) extends Test( initialId) {
 				val scheduledAt = new DateTimeField()
 				val successfulOutcome = new TextField()
 
@@ -61,7 +66,7 @@ class EntitySpecs extends Specification {
 			}
 
 			class Bar( initialId :EntityUuidIdField) extends Foo( initialId) {
-				val icky = new DateTimeField()
+				val icky = null
 				val nicky = new TextField()
 
 				override def fieldList :List[ Field[ _]] = super.fieldList ++ List( icky, nicky)
@@ -69,7 +74,8 @@ class EntitySpecs extends Specification {
 				setup
 			}
 
-			val b = new Bar( EntityUuidIdField())
+			new Bar( EntityUuidIdField())
+			success
 		}
 
 		"Should receive only 1 notification for a change" in {

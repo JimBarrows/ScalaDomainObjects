@@ -26,7 +26,7 @@ class RepositorySpecs extends Specification {
 
 		"return a list of entities that meets a predicate" in {
 
-			repo.filter( findNumericEqualTo2) must contain (te2, te3)
+			repo.filter( findNumericEqualTo2) must contain (allOf(te2, te3))
 		}
 
 		"return a list of entities that do not satisfy a predicate" in {
@@ -53,7 +53,7 @@ class RepositorySpecs extends Specification {
 
 		"save a list of entities to the repository" in {
 			writableRepo.saveAll( te5 :: te6 :: Nil)
-			writableRepo.filter( findNumericEqualTo6) must contain( te5, te6)
+			writableRepo.filter( findNumericEqualTo6) must contain( allOf(te5, te6))
 		}
 	}
 

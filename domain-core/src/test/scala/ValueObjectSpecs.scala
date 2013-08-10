@@ -7,13 +7,15 @@ class ValueObjectSpecs extends Specification {
 
 	class TestVo( val foo :NumericField, val bar :NumericField) extends ValueObject {
 		override def fieldList :List[Field[_]] = foo :: bar :: Nil
+		setup
 	}
 
 	"A value object" should {
 		
 		"only have readonly fields" in {
 			val testVo = new TestVo( NumericField(5), NumericField(6))
-			testVo.fieldList.foreach( _.writable_?  must beFalse)
+			testVo.fieldList must contain( (f: Field[_]) => ! f.writable_? )
+
 		}
 
 		"be equal to another value object if their fields are the same and the types are the same" in {

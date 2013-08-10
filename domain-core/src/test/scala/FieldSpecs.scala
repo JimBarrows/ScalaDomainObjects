@@ -173,7 +173,7 @@ class FieldSpecs extends Specification {
 			val scheduledAt = new DateTimeField()
 			val successfulOutcome = new TextField()
 
-			List( scheduledAt, successfulOutcome) must contain( scheduledAt, successfulOutcome)
+			List( scheduledAt, successfulOutcome) must contain( allOf(scheduledAt, successfulOutcome))
 
 		}
 	}
@@ -222,6 +222,7 @@ class FieldSpecs extends Specification {
 			class StringListField extends ListField[ String] {
 			}
 			val field = new StringListField
+			success
 		}
 
 		"add an element to the list" in {
