@@ -2,7 +2,7 @@ package sdo.core.domain
 
 import scala.math.BigInt
 import scala.collection.mutable.MutableList
-import java.util.UUID
+import java.util.{Currency, Locale, UUID}
 
 import com.github.nscala_time.time.Imports._
 import org.joda.time.DateMidnight
@@ -169,7 +169,10 @@ object DateTimeField {
 	def apply() :DateTimeField = new DateTimeField()
 }
 
-class DateField extends Field[DateMidnight] {
+class DateField extends Field[DateMidnight] 
+
+object DateField {
+	def apply = new DateField()
 }
 
 class ListField[T] extends Field[ MutableList[ T]] {
@@ -201,11 +204,47 @@ class ListField[T] extends Field[ MutableList[ T]] {
 	override def toString = "ListField( %s)".format( data)
 }
 
+object ListField {
+	def apply = new ListField()
+}
+
+case class Range[T]( from: Option[T], thru :Option[T])
+
+class RangeField[T] extends Field[ Range[T]] {
+}
+
 case class DateRange( from :DateMidnight, thru :Option[DateMidnight])
-case class DateTimeRange( from :DateTime, thru :Option[DateTime])
 
 class DateRangeField extends Field[ DateRange] {
 }
 
+case class DateTimeRange( from :DateTime, thru :Option[DateTime])
+
 class DateTimeRangeField extends Field[ DateTimeRange] {
+}
+
+/** Immutable money class.
+ */
+sealed case class Money( amount :BigDecimal, currency :Currency) {
+
+	/**Convience method for creating the result of an operation.
+	 */
+	private def newMoney(amount :BigDecimal) = Money( amount, this.currency)
+
+	def +(money :Money) = {
+		require(money.currency.equals(currency), "Currencies must be the same. this: %s that:%s".format(this.currency, money.currency))
+		newMoney( amount + money.amount)
+	}
+
+	def -(money :Money) = {
+		require(money.currency.equals(currency), "Currencies must be the same. this: %s that:%s".format(this.currency, money.currency))
+		newMoney( amount - money.amount)
+	}
+}
+
+object Money {
+
+	def $( amount :BigDecimal) = Money( amount, Currency.getInstance(Locale.US))
+}
+class MoneyField extends Field[Money]{
 }

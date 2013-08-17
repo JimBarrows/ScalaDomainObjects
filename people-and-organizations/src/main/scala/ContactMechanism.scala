@@ -3,6 +3,13 @@ package sdo.peopleAndOrganizations
 import sdo.core.domain._
 import sdo.core.domain.ValidationMethods._
 
+/**Implement this trait on someone, group or thing that can be contacted.
+*/
+trait Contactable[ T <: ContactMechanism] {
+	
+	private val contactMechanisms :List[ T] = Nil
+}
+
 
 /** This is the information surrounding the end point.
 */
@@ -22,14 +29,6 @@ object ContactMechanism {
 		cm
 	}
 }
-
-/**Implement this trait on someone, group or thing that can be contacted.
-*/
-trait Contactable[ T <: ContactMechanism] {
-	
-	private val contactMechanisms :List[ T] = Nil
-}
-
 
 class ElectronicAddress extends ContactMechanism {
 }
