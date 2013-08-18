@@ -8,13 +8,11 @@ class WebAddress extends ElectronicAddress {
 
 	val url = new UrlField()
 
-	override def fieldList = super.fieldList ::: url :: Nil
 }
 
 object WebAddress {
 	def apply() = {
 		val wa = new WebAddress()
-		wa.setup
 		wa
 	}
 }

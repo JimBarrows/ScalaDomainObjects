@@ -5,8 +5,8 @@ import sdo.core.domain.ValidationMethods._
 
 class Organization(initialId :EntityUuidIdField) extends Entity 
 																									with Classifications[OrganizationClassification] 
-																									with RolesToPlay[OrganizationRole]
-																									with Contactable[ElectronicAddress] {
+																									with RolesToPlay[OrganizationRole] {
+																									
 
 	override val id = initialId
 

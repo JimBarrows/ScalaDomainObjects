@@ -189,6 +189,8 @@ class ListField[T] extends Field[ MutableList[ T]] {
 		} 
 	})
 
+	def exists( predicate: T => Boolean): Boolean  = data.map( _.exists( predicate)).getOrElse(false)
+
 	def remove( value :T) :Unit = data = data.map( l=> {
 		if (writable_? || ! initialized_? ) {
 			val newList = l.diff( value :: Nil)	
@@ -215,7 +217,17 @@ class RangeField[T] extends Field[ Range[T]] {
 
 case class DateRange( from :DateMidnight, thru :Option[DateMidnight])
 
+
 class DateRangeField extends Field[ DateRange] {
+}
+
+object DateRangeField {
+	
+	def apply() :DateRangeField= {
+		val drf = new DateRangeField()
+		drf.value = new DateRange( DateMidnight.now, None)
+		drf
+	}
 }
 
 case class DateTimeRange( from :DateTime, thru :Option[DateTime])
