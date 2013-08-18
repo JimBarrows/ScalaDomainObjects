@@ -7,7 +7,7 @@ import sdo.core.domain.ValidationMethods._
 */
 trait Contactable {
 	
-	private val contactMechanisms = new ListField[ ContactMechanismField]()
+	private val contactMechanisms = new ListField[ ContactMechanismField[ContactMechanism]]()
 }
 
 
@@ -19,10 +19,26 @@ class ContactMechanism {
 	
 }
 
-class ContactMechanismField extends Field[ ContactMechanism] {
+class ContactMechanismField[T <: ContactMechanism] extends Field[ T] {
 }
 
 class ElectronicAddress extends ContactMechanism {
+}
+
+class ElectronicAddressField extends ContactMechanismField[ ElectronicAddress] {
+}
+
+class PhoneNumber extends ContactMechanism {
+	val acceptsData = BooleanField
+	val acceptsFaxes = BooleanField
+	val acceptsTextMessages = BooleanField
+	val areaCode = NumericField
+	val contactNumber = NumericField
+	val countryCode = NumericField
+	val extension = NumericField
+}
+
+class PhoneNumberField extends ContactMechanismField[ PhoneNumber] {
 }
 
 class PostalAddress(activePeriod: DateRangeField, comment: TextField, address: TextField, within: GeographicBoundary) extends ContactMechanism {
@@ -36,6 +52,9 @@ object PostalAddress {
 		state contains_+ ( zipCode contains_+ ( city))
 		new PostalAddress( DateRangeField(), TextField(), TextField( address), city)
 	} 
+}
+
+class PostalAddressField extends ContactMechanismField[ PostalAddress] {
 }
 
 class GeographicBoundary( geoCode: TextField, initialName: TextField, abbreviation: ShortTextField, 
@@ -59,6 +78,9 @@ class GeographicBoundary( geoCode: TextField, initialName: TextField, abbreviati
 		}
 	}
 	
+}
+
+class GeographicBoundaryField extends Field[ GeographicBoundary] {
 }
 
 class City( geoCode: TextField, name: TextField, abbreviation: ShortTextField, within: ListField[GeographicBoundary], in: ListField[GeographicBoundary]) extends GeographicBoundary( geoCode, name, abbreviation, within, in) {

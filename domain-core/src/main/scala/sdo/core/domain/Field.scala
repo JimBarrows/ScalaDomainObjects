@@ -98,7 +98,7 @@ class NumericField extends Field[String] {
 
 object NumericField {
 
-	def apply() = new NumericField()
+	def apply = new NumericField()
 	def apply( value :String) = {
 		val nf = new NumericField()
 		nf.value = (value)
@@ -123,6 +123,10 @@ class AlphaField extends Field[String] {
 */
 class BooleanField extends Field[Boolean] {
 	override def toString = "BooleanField( %s)".format( data)
+}
+
+object BooleanField {
+	def apply = new BooleanField()
 }
 
 /** A class representing the mathematical concept of Integers.
