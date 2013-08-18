@@ -4,8 +4,8 @@ import sdo.core.domain._
 import sdo.core.domain.ValidationMethods._
 
 class Person(initialId :EntityUuidIdField) extends Entity 
-																						with Classifications[ PersonClassification]
-																						with RolesToPlay[ PersonRole]{
+																						with Classifications
+																						with RolesToPlay{
 	
 	override val id = initialId
 

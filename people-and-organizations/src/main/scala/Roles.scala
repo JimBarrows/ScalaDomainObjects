@@ -3,13 +3,17 @@ package sdo.peopleAndOrganizations
 import sdo.core.domain._
 import sdo.core.domain.ValidationMethods._
 
-trait RolesToPlay[ T <: Role] {
+trait RolesToPlay {
 
-	val roles = new ListField[T]()
+	val roles =new  ListField[RoleField]()
 }
 
 trait Role {
 	val applies :DateRangeField
+}
+
+class RoleField extends Field[ Role] {
+	override def toString = "RoleField( %s)".format( value.toString)
 }
 
 trait PersonRole extends Role
