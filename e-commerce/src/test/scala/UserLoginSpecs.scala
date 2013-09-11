@@ -4,8 +4,6 @@ import java.util.Locale
 
 import org.specs2.mutable._
 
-import org.scala_tools.time.Imports._
-
 import org.apache.commons.codec.digest.DigestUtils._
 
 import sdo.ecommerce.domain._

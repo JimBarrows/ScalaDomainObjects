@@ -6,6 +6,7 @@ import sdo.core.domain.ValidationMethods._
 import sdo.peopleAndOrganizations.contactMechanisms.Contactable
 
 class Person(initialId :EntityUuidIdField) extends Entity 
+																						with Party
 																						with Classifications
 																						with RolesToPlay
 																						with Contactable{

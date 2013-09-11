@@ -2,8 +2,6 @@ package test
 
 import org.specs2.mutable._
 
-import org.scala_tools.time.Imports._
-
 import sdo.ecommerce.domain.{Parameter, Url, DomainName, Http}
 import sdo.ecommerce.domain.Protocol._
 

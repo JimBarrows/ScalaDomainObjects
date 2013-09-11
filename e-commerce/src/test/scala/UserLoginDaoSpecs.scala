@@ -8,7 +8,7 @@ class UserLoginDaoSpecs extends Specification {
 	"The UserLoginDao should" should {
 
 		"create a user login record" in {
-			todo()
+			todo
 		}
 	}
 }

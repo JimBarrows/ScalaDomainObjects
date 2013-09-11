@@ -26,7 +26,7 @@ class DomainNameSpecs extends Specification with ParserMatchers{
 		 }
 		 
 		 "not parse 123local" in {
-		 	val dn = DomainName.run("123local") must beAFailure
+		 		DomainName.run("123local") must beAFailure
 		 	
 		 }
 		
