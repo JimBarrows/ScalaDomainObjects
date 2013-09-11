@@ -3,9 +3,12 @@
 import sdo.core.domain._
 import sdo.core.domain.ValidationMethods._
 
+import sdo.peopleAndOrganizations.contactMechanisms.Contactable
+
 class Person(initialId :EntityUuidIdField) extends Entity 
 																						with Classifications
-																						with RolesToPlay{
+																						with RolesToPlay
+																						with Contactable{
 	
 	override val id = initialId
 

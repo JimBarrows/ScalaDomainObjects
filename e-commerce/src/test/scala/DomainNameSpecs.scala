@@ -3,8 +3,6 @@ package test
 import org.specs2.mutable._
 import org.specs2.matcher._
 
-import org.scala_tools.time.Imports._
-
 import scala.util.parsing.combinator._
 import scala.util.parsing.combinator.syntactical._
 
@@ -29,9 +27,6 @@ class DomainNameSpecs extends Specification with ParserMatchers{
 		 
 		 "not parse 123local" in {
 		 	val dn = DomainName.run("123local") must beAFailure
-//		 	beLike {
-//		 		case DomainName.Failure(msg,_) =>{ 	true}		 		
-//		 	}
 		 	
 		 }
 		

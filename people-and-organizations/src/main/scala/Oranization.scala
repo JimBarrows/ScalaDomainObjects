@@ -3,9 +3,12 @@ package sdo.peopleAndOrganizations
 import sdo.core.domain.{Entity, Field, EntityUuidIdField, TextField}
 import sdo.core.domain.ValidationMethods._
 
+import sdo.peopleAndOrganizations.contactMechanisms.Contactable
+
 class Organization(initialId :EntityUuidIdField) extends Entity 
 																									with Classifications 
-																									with RolesToPlay {
+																									with RolesToPlay
+																									with Contactable{
 																									
 
 	override val id = initialId

@@ -1,4 +1,4 @@
-package sdo.peopleAndOrganizations
+package sdo.peopleAndOrganizations.contactMechanisms
 
 import sdo.core.domain._
 import sdo.core.domain.ValidationMethods._
@@ -13,13 +13,18 @@ trait Contactable {
 
 /** This is the information surrounding the end point.
 */
-class ContactMechanism {
-
-	val solicitable :BooleanField = new BooleanField
-	
-}
+case class ContactMechanism (
+	solicitable :BooleanField = BooleanField( false),
+	purposes: List[PurposeField]	 = Nil,
+	activePeriod: DateRangeField = DateRangeField()
+)
 
 class ContactMechanismField[T <: ContactMechanism] extends Field[ T] {
+}
+
+case class Purpose( activePeriod: DateRangeField)
+
+class PurposeField extends Field[ Purpose] {
 }
 
 class ElectronicAddress extends ContactMechanism {
@@ -98,3 +103,11 @@ class Country( geoCode: TextField, name: TextField, abbreviation: ShortTextField
 class Province( geoCode: TextField, name: TextField, abbreviation: ShortTextField, within: ListField[GeographicBoundary], in: ListField[GeographicBoundary]) extends GeographicBoundary( geoCode, name, abbreviation, within, in) {
 }
 
+class SalesTerritory( geoCode: TextField, name: TextField, abbreviation: ShortTextField, within: ListField[GeographicBoundary], in: ListField[GeographicBoundary]) extends GeographicBoundary( geoCode, name, abbreviation, within, in) {
+}
+
+class ServiceTerritory( geoCode: TextField, name: TextField, abbreviation: ShortTextField, within: ListField[GeographicBoundary], in: ListField[GeographicBoundary]) extends GeographicBoundary( geoCode, name, abbreviation, within, in) {
+}
+
+class Region( geoCode: TextField, name: TextField, abbreviation: ShortTextField, within: ListField[GeographicBoundary], in: ListField[GeographicBoundary]) extends GeographicBoundary( geoCode, name, abbreviation, within, in) {
+}

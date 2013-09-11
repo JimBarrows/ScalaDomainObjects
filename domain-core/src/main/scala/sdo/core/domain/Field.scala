@@ -126,7 +126,14 @@ class BooleanField extends Field[Boolean] {
 }
 
 object BooleanField {
+
 	def apply = new BooleanField()
+
+	def apply( init: Boolean) = {
+		val bf = new BooleanField()
+		bf.value = (init)
+		bf
+	}
 }
 
 /** A class representing the mathematical concept of Integers.

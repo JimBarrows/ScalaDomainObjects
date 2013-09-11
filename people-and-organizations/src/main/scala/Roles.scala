@@ -3,12 +3,14 @@ package sdo.peopleAndOrganizations
 import sdo.core.domain._
 import sdo.core.domain.ValidationMethods._
 
+import sdo.peopleAndOrganizations.contactMechanisms.Contactable
+
 trait RolesToPlay {
 
 	val roles =new  ListField[RoleField]()
 }
 
-trait Role {
+trait Role extends Contactable {
 	val applies :DateRangeField
 }
 
