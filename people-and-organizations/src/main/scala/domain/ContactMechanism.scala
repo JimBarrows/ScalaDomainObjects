@@ -1,4 +1,4 @@
-package sdo.peopleAndOrganizations.contactMechanisms
+package sdo.peopleAndOrganizations.domain.contactMechanisms
 
 import sdo.core.domain._
 import sdo.core.domain.ValidationMethods._

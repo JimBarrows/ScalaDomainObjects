@@ -1,4 +1,4 @@
-package sdo.peopleAndOrganizations
+package sdo.peopleAndOrganizations.domain
 
 import sdo.core.domain._
 import sdo.core.domain.ValidationMethods._

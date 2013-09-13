@@ -1,9 +1,9 @@
- package sdo.peopleAndOrganizations
+ package sdo.peopleAndOrganizations.domain
 
 import sdo.core.domain._
 import sdo.core.domain.ValidationMethods._
 
-import sdo.peopleAndOrganizations.contactMechanisms.Contactable
+import sdo.peopleAndOrganizations.domain.contactMechanisms.Contactable
 
 class Person(initialId :EntityUuidIdField) extends Entity 
 																						with Party

@@ -1,7 +1,7 @@
-package sdo.peopleAndOrganizations.communicationEvent
+package sdo.peopleAndOrganizations.domain.communicationEvent
 
-import sdo.peopleAndOrganizations.{Party, Relationship}
-import sdo.peopleAndOrganizations.contactMechanisms.ContactMechanism
+import sdo.peopleAndOrganizations.domain.{Party, Relationship}
+import sdo.peopleAndOrganizations.domain.contactMechanisms.ContactMechanism
 import sdo.core.domain._
 
 class CommunicationEvent( initialId: EntityUuidIdField, 

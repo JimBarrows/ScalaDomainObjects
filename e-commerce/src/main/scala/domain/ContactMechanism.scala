@@ -2,7 +2,7 @@ package sdo.ecommerce.domain
 
 import sdo.core.domain.{Entity, Field, EntityUuidIdField, TextField, ShortTextField, ValueObject}
 import sdo._
-import peopleAndOrganizations.contactMechanisms._
+import peopleAndOrganizations.domain.contactMechanisms._
 
 class WebAddress extends ElectronicAddress {
 
