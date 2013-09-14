@@ -1,12 +1,16 @@
 package sdo.core.domain
 
+import sdo.core.infrastructure.Dao
+
 /**Represents all objects fo a certain type as a conceptual set.  It acts like a collection,
 except with more elaborate querying capability.  Handles the transition to and from storage.
 */
-trait Repository[T, E] {
+trait Repository[T, K] {
+
+	this: Dao[T, K] =>
 
 	/** An option containing the first element in the repository that matches the id. */
-	def find[E <: EntityIdField[_]]( id : E) :Option[T]
+	def find[K <: EntityIdField[_]]( id : K) :Option[T]
 
 	/** An option containing the first element in the repository that matches the predicate. */
 	def find( predicate :Predicate[T]) :Option[T]

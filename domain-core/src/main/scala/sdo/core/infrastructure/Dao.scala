@@ -4,10 +4,10 @@ package sdo.core.infrastructure
 trait Dao[T, K] {
 
 	def create( newRow :T) :Either[ DataAccessError, T] 
-	def read( primaryKey :K) :Either[ DataAccessError, T] 
+	def read( primaryKey :K) :Either[ DataAccessError, Option[T]] 
 	def update( row :T) :Either[ DataAccessError, T]
 	def delete( primaryKey :K) :Option[ DataAccessError]
 }
 
-class DataAccessError {
+trait DataAccessError {
 }

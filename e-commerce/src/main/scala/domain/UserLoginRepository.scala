@@ -2,8 +2,11 @@ package sdo.ecommerce.domain
 
 import sdo.core.domain.AndPredicate
 import sdo.core.domain.{Repository, WritableRepository, Predicate, EntityUuidIdField }
+import sdo.core.infrastructure.Dao
 
 class UserLoginRepository extends Repository[ UserLogin, EntityUuidIdField] with WritableRepository[ UserLogin] {
+
+	this: Dao[UserLogin, EntityUuidIdField] =>
 
 	override def find[EntityUuidIdField]( id : EntityUuidIdField) :Option[UserLogin] = {
 		None
@@ -47,8 +50,6 @@ class UserLoginRepository extends Repository[ UserLogin, EntityUuidIdField] with
 
 object UserLoginRepository {
 	
-	def apply = new UserLoginRepository()
-
 	def activeUserLogin(username :String, password :String, url :Url) = new AndPredicate[UserLogin]( new UsernamePasswordP(username, password, url), ActiveUserLoginP())
 
 }
