@@ -269,5 +269,10 @@ object Money {
 
 	def $( amount :BigDecimal) = Money( amount, Currency.getInstance(Locale.US))
 }
+
 class MoneyField extends Field[Money]{
+}
+
+object MoneyField {
+	def apply() = new MoneyField()
 }
