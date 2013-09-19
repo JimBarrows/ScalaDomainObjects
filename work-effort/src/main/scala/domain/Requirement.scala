@@ -1,6 +1,7 @@
 package sdo.workEffort.domain
 
 import sdo.core.domain.{DateField,
+												DateRangeField,
 												Entity, 
 												EntityUuidIdField, 
 												Field,
@@ -28,6 +29,9 @@ class Requirement(initialId: EntityUuidIdField) extends Entity {
 	val composedOf: List[Requirement] = Nil
 
 	val partOf: Option[Requirement] = None
+
+	val involving = RequirementRoleListField
+
 	setup
 	
 }
@@ -78,3 +82,23 @@ trait Product {
 	def comment: TextField
 }
 
+class RequirementRole( dateRange: DateRangeField, comment: TextField, party: Party)
+
+case class RequestedBy( dateRange: DateRangeField, comment: TextField, party: Party) extends RequirementRole( dateRange, comment, party)
+
+case class AssignedTo( dateRange: DateRangeField, comment: TextField, party: Party) extends RequirementRole( dateRange, comment, party)
+
+case class Contributor( dateRange: DateRangeField, comment: TextField, party: Party) extends RequirementRole( dateRange, comment, party)
+
+case class AuthorizedBy( dateRange: DateRangeField, comment: TextField, party: Party) extends RequirementRole( dateRange, comment, party)
+
+class RequirementRoleListField extends ListField[RequirementRole]
+
+object RequirementRoleListField {
+
+	def apply = new RequirementRoleListField()
+}
+
+trait Party {
+	def id: EntityUuidIdField
+	}
