@@ -32,6 +32,9 @@ class Requirement(initialId: EntityUuidIdField) extends Entity {
 
 	val involving = RequirementRoleListField
 
+	val fulfilledBy: List[WorkEffort] = Nil
+
+	val commitedBy = new ListField[OrderRequirementCommitment]()
 	setup
 	
 }
