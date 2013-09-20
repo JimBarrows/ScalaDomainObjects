@@ -102,6 +102,3 @@ object RequirementRoleListField {
 	def apply = new RequirementRoleListField()
 }
 
-trait Party {
-	def id: EntityUuidIdField
-	}

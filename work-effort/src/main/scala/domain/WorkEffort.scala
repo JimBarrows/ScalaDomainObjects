@@ -33,6 +33,7 @@ class WorkEffort(initialId: EntityUuidIdField) extends Entity {
 	val redoneVia: List[WorkEffort] = Nil
 	val versionOf: Option[WorkEffort] = None
 	val status = StatusListField 
+	val trackedVia = TimeEntryListField
 }
 
 class StatusListField extends ListField[ Status]
@@ -76,8 +77,6 @@ object HoursField {
 	def apply = new HoursField()
 }
 
-trait Facility
-
 trait OrderItem {
 	def seqId: IntegerField
 	def estimatedDeliveryDate: DateField
@@ -105,3 +104,5 @@ class Precedency ( from: WorkEffort, to: WorkEffort, effective: DateRangeField) 
 
 class Concurrency ( from: WorkEffort, to: WorkEffort, effective: DateRangeField) extends
 	Dependency( from, to, effective)
+
+
