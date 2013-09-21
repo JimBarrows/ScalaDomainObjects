@@ -42,14 +42,14 @@ object StatusListField {
 	def apply = new StatusListField()
 }
 
-class PartyAssignment( effective: DateRangeField, comment: TextField, assignedTo: Party)
+class PartyAssignment( effective: DateRangeField, comment: TextField, assignedTo: Party, rate: Option[ AssignmentRate] = None) 
 
 
-case class ProjectManager( effective: DateRangeField, comment: TextField, assignedTo: Party ) 
-	extends PartyAssignment( effective, comment, assignedTo)
+case class ProjectManager( effective: DateRangeField, comment: TextField, assignedTo: Party  , rate: Option[ AssignmentRate] = None) 
+	extends PartyAssignment( effective, comment, assignedTo, rate)
 
-case class TeamMember( effective: DateRangeField, comment: TextField, assignedTo: Party ) 
-	extends PartyAssignment( effective, comment, assignedTo)
+case class TeamMember( effective: DateRangeField, comment: TextField, assignedTo: Party , rate: Option[ AssignmentRate] = None) 
+	extends PartyAssignment( effective, comment, assignedTo, rate)
 
 class Status( at: DateTimeField)
 

@@ -19,6 +19,8 @@ trait Party{
 	def id: EntityUuidIdField
 
 	def actingAs: List[PartyRole]
+
+	def withARateOf = new ListField[PartyRate]
 }
 
 trait PartyRole{

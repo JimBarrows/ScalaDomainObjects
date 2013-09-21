@@ -248,7 +248,7 @@ class DateTimeRangeField extends Field[ DateTimeRange] {
 
 /** Immutable money class.
  */
-sealed case class Money( amount :BigDecimal, currency :Currency) {
+case class Money( amount :BigDecimal, currency :Currency) {
 
 	/**Convience method for creating the result of an operation.
 	 */
