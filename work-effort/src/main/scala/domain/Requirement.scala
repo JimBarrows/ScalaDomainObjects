@@ -20,7 +20,7 @@ class Requirement(initialId: EntityUuidIdField) extends Entity {
 
 	val requiredBy = DateField
 
-	val estimatedBudget = MoneyField
+	val estimate = EstimateField
 
 	val quantity = IntegerField
 

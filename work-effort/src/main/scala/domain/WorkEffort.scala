@@ -1,6 +1,6 @@
 package sdo.workEffort.domain
 
-import org.joda.time.Hours
+import org.joda.time.{Duration, Hours}
 import sdo.core.domain.{DateField,
 												DateRangeField,
 												DateTimeField,
@@ -22,11 +22,9 @@ class WorkEffort(initialId: EntityUuidIdField) extends Entity {
 	val scheduledStartDate = DateField
 	val scheduledCompletionDate = DateField
 	val totalAmountAllowed = MoneyField
-	val totalHoursAllowed = HoursField
-	val estimatedHours = HoursField
-	val actualStartDateTime = DateTimeField
-	val actualCompletionDateTime = DateTimeField
-	val actualHours = HoursField
+	val estimate = EstimateField
+	val actualStartDateTime = new DateTimeField()
+	val actualCompletionDateTime = new DateTimeField()
 	val specialTerms = TextField
 	val performedAt: Option[Facility] = None
 	val fulfillmentOf: List[Requirement] = Nil
@@ -34,7 +32,13 @@ class WorkEffort(initialId: EntityUuidIdField) extends Entity {
 	val versionOf: Option[WorkEffort] = None
 	val status = StatusListField 
 	val trackedVia = TimeEntryListField
+	def actualHours: Option[Duration] = if( actualStartDateTime.value.isEmpty || actualCompletionDateTime.value.isEmpty){
+			None 
+		}else { 
+			Some(new Duration( actualStartDateTime.value.get, actualCompletionDateTime.value.get))
+		}
 }
+
 
 class StatusListField extends ListField[ Status]
 
@@ -71,22 +75,6 @@ class Maintenance(initialId: EntityUuidIdField) extends WorkEffort (initialId)
 class WorkFlow(initialId: EntityUuidIdField) extends WorkEffort (initialId)
 class Research(initialId: EntityUuidIdField) extends WorkEffort (initialId)
 
-class HoursField extends Field[Hours]
-
-object HoursField {
-	def apply = new HoursField()
-}
-
-trait OrderItem {
-	def seqId: IntegerField
-	def estimatedDeliveryDate: DateField
-	def quantity: IntegerField
-	def unitPrice: MoneyField
-	def shippingInstructions: TextField
-	def comment: TextField
-	def itemDescription: TextField
-	val fulfillerOf = new ListField[OrderRequirementCommitment]()
-}
 
 case class OrderRequirementCommitment( usageOf: OrderItem, commitmentOf: Requirement, quantity: Integer)
 
