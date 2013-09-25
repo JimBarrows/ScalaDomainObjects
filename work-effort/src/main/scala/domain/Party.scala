@@ -21,6 +21,8 @@ trait Party{
 	def actingAs: List[PartyRole]
 
 	def withARateOf = new ListField[PartyRate]
+
+	def assignedTo = new ListField[ WorkQueue]()
 }
 
 trait PartyRole{

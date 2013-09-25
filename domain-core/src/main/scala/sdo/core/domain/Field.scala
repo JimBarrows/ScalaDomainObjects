@@ -190,6 +190,8 @@ class ListField[T] extends Field[ MutableList[ T]] {
 
 	data = Some( new MutableList[T]())
 
+	def +=( newValue: T): Unit = add( newValue)
+
 	def add( newValue :T) :Unit = data.map( l => { 
 
 		if (writable_? || ! initialized_? ) {
@@ -201,6 +203,8 @@ class ListField[T] extends Field[ MutableList[ T]] {
 	})
 
 	def exists( predicate: T => Boolean): Boolean  = data.map( _.exists( predicate)).getOrElse(false)
+
+	def contains( value: T): Boolean = data.map( _.contains( value)).getOrElse(false)
 
 	def remove( value :T) :Unit = data = data.map( l=> {
 		if (writable_? || ! initialized_? ) {
@@ -217,9 +221,6 @@ class ListField[T] extends Field[ MutableList[ T]] {
 	override def toString = "ListField( %s)".format( data)
 }
 
-object ListField {
-	def apply = new ListField()
-}
 
 case class Range[T]( from: Option[T], thru :Option[T])
 
