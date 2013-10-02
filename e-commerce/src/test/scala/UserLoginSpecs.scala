@@ -36,27 +36,20 @@ class UserLoginSpecs extends Specification {
 			val ul = UserLogin( "username", "password", LocalHost80)
 			val wup = LocalePreference( "language", Locale.US)
 			ul.preferences.+=( wup)
-			ul.preferences.value must contain( wup)
+			ul.preferences.list must contain( wup)
 		}
 
 		"can retrieve a preference" in {
 			val ul = UserLogin( "username", "password", LocalHost80)
 			val wup = LocalePreference( "language", Locale.US)
 			val wup2 = LocalePreference( "currency", Locale.CANADA)
-			ul.add( wup)
-			ul.add( wup2)
+			ul.preferences.+=( wup)
+			ul.preferences.+=( wup2)
 		
-			ul.find( "language") must beSome( wup)
-		}
-
-		"can update a preference" in {
-			val ul = UserLogin( "username", "password", LocalHost80)
-			val wup = LocalePreference( "language", Locale.US)
-			val wup2 = LocalePreference( "language", Locale.CANADA)
-			ul.add( wup)
-
-			ul.change( wup2)
-			ul.find( "language") must beSome( LocalePreference( "language", Locale.CANADA))
+			ul.preferences.find( p => {
+				println("name: %s value: %s".format( p.name, p.name.value))
+				p.name.value.equals(Some("language"))
+				}) must beSome( wup)
 		}
 
 		"be for a single web address" in {

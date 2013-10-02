@@ -27,7 +27,7 @@ case class Purpose( activePeriod: DateRangeField)
 class PurposeField extends Field[ Purpose] {
 }
 
-class ElectronicAddress extends ContactMechanism {
+trait ElectronicAddress extends ContactMechanism {
 }
 
 class ElectronicAddressField extends ContactMechanismField[ ElectronicAddress] {

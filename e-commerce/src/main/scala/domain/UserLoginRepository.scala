@@ -4,51 +4,15 @@ import sdo.core.domain.AndPredicate
 import sdo.core.domain.{Repository, WritableRepository, Predicate, EntityUuidIdField }
 import sdo.core.infrastructure.Dao
 
-class UserLoginRepository extends Repository[ UserLogin, EntityUuidIdField] with WritableRepository[ UserLogin] {
-
-	override def find[EntityUuidIdField]( id : EntityUuidIdField) :Option[UserLogin] = {
-		None
-	}
-
-	override def find( predicate :Predicate[UserLogin]) :Option[UserLogin] = {
-		None
-	}
-
-	/** The collection consisting of those elements of xs that satisfy the predicate */
-	override def filter( predicate :Predicate[UserLogin]) :List[UserLogin] = {
-		Nil
-	}
-
-	/** The collection consisting of those elements of xs that fail to satisfy the predicate */
-	override def filterNot( predicate :Predicate[UserLogin]) :List[UserLogin] = {
-		Nil
-	}
-
-	/**Determine if there is a value in the repository that matches the predicated. */
-	override def exists( predicate :Predicate[UserLogin]) :Boolean = {
-		false
-	}
-
-	/**Count hoe many items int he repository match the predicate. */
-	override def count( predicate :Predicate[UserLogin]) :Long = {
-		0
-	}
-
-	override def toList :List[UserLogin] = {
-		Nil
-	}
-
-	def save( entity :UserLogin) : Unit = {
-	}
-
-	override def saveAll( entities :List[UserLogin]) : Unit = {
-	}
-
+trait UserLoginRepository extends Repository[ UserLogin, EntityUuidIdField] with WritableRepository[ UserLogin] {
 }
 
 object UserLoginRepository {
 	
-	def activeUserLogin(username :String, password :String, url :Url) = new AndPredicate[UserLogin]( new UsernamePasswordP(username, password, url), ActiveUserLoginP())
+	def activeUserLogin(username :String, password :String, url :Url) = 
+		new AndPredicate[UserLogin]( 
+			new UsernamePasswordP(username, password, url), 
+			ActiveUserLoginP())
 
 }
 

@@ -202,6 +202,10 @@ class ListField[T] extends Field[ MutableList[ T]] {
 		} 
 	})
 
+	def find( p: (T) => Boolean):Option[T] = data.map( _.find( p)).getOrElse(None)
+
+	def list: MutableList[T] = data.getOrElse(new MutableList[T])
+
 	def exists( predicate: T => Boolean): Boolean  = data.map( _.exists( predicate)).getOrElse(false)
 
 	def contains( value: T): Boolean = data.map( _.contains( value)).getOrElse(false)
