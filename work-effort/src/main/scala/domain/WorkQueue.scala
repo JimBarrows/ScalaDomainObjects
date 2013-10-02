@@ -1,7 +1,9 @@
 package sdo.workEffort.domain
 
 import sdo.core.domain.{Entity, 
+												EntityError,
 												EntityUuidIdField,
+												Field,
 												IntegerField,
 												ListField}
 
@@ -26,3 +28,18 @@ object WorkQueue {
 
 	def apply = new WorkQueue( EntityUuidIdField())
 }
+
+object WorkQueueValidationMethods {
+
+	def processorAssignedWorkOverWip( )(workQueue: WorkQueue): List[EntityError] = {
+		workQueue.processors.flatmap( processor =>
+			if( processor.assignedTo.value.getOrElse(0) > workQueue.workInProgressLimit.value.getOrElse(0) {
+				 	ProcessorHasMoreWipThanAllowed( party, 
+				 																	assigned.length, 
+				 																	workInProgressLimit.value.getOrElse(0))
+			} 
+	}
+
+}
+
+case class ProcessorHasMoreWipThanAllowed( party: Party, numberAssigned: Int, wipAllowed: Int) extends EntityError

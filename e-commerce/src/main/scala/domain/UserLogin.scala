@@ -4,7 +4,7 @@ import java.util.Locale
 
 import org.apache.commons.codec.digest.DigestUtils._
 
-import sdo.core.domain.{Entity, Field, EntityUuidIdField, TextField, ShortTextField, ValueObject}
+import sdo.core.domain.{Entity, Field, EntityUuidIdField, ListField, TextField, ShortTextField, ValueObject}
 
 class UserLogin( initialId :EntityUuidIdField) extends Entity {
 
@@ -12,24 +12,13 @@ class UserLogin( initialId :EntityUuidIdField) extends Entity {
 
 	val username = ShortTextField()
 	val password = PasswordField()
-	val webAddress = WebAddress()
+	val webAddress = WebAddressField()
 	val accountStatus = AccountStatusField()
 
-	private var _preferences :List[ WebUserPreference[ _]] = Nil
+	val preferences = new ListField[ WebUserPreference[ _]] ()
 
-	override def fieldList :List[ Field[ _]] = List( username, password)
+	override def fieldList :List[ Field[ _]] = List( username, password, webAddress, accountStatus, preferences)
 
-	def preferences =  _preferences
-
-	def add( wup :WebUserPreference[ _]) {_preferences  = wup :: _preferences}
-
-	def find( name :String) :Option[WebUserPreference[ _]] = _preferences.find( p => p.name.value == Some(name)) 
-
-	def change( newValue :WebUserPreference[ _]) ={
-		val oldValue = find( newValue.name.value.getOrElse(""))
-		_preferences = _preferences diff List( oldValue)
-		add( newValue)
-	}
 }
 
 object UserLogin {

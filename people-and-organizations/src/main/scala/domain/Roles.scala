@@ -11,7 +11,7 @@ trait RolesToPlay {
 }
 
 trait Role extends Contactable {
-	val applies :DateRangeField
+	val applies =DateRangeField()
 }
 
 class RoleField extends Field[ Role] {
@@ -20,32 +20,27 @@ class RoleField extends Field[ Role] {
 
 trait PersonRole extends Role
 
-class Employee( dateRange :DateRangeField)  extends PersonRole {
-	override val applies = this.dateRange
+class Employee  extends PersonRole {
 }
 
 
 trait OrganizationRole extends Role
 
-class OrganizationUnit(dateRange: DateRangeField) extends OrganizationRole {
-	override val applies = this.dateRange
+class OrganizationUnit extends OrganizationRole {
 }
 
-class Partner(dateRange :DateRangeField) extends OrganizationRole{
-	override val applies = this.dateRange
+class Partner extends OrganizationRole{
 }
 
-class InternalOrganization(dateRange :DateRangeField) extends OrganizationRole{
-	override val applies = this.dateRange
+class InternalOrganization extends OrganizationRole{
 }
 
-class Customer(dateRange :DateRangeField) extends PersonRole with OrganizationRole{
-	override val applies = this.dateRange
+class ConsumerRole extends PersonRole with OrganizationRole {
 }
 
-class BillTocustomer(dateRange :DateRangeField) extends Customer (dateRange)
+class Customer extends ConsumerRole
 
-class Prospect(dateRange :DateRangeField) extends PersonRole with OrganizationRole{
-	override val applies = this.dateRange
-}
+class BillTocustomer extends Customer
+
+class Prospect extends ConsumerRole
 

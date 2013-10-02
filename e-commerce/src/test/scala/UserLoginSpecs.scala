@@ -35,8 +35,8 @@ class UserLoginSpecs extends Specification {
 		"can have preferences added to it" in {
 			val ul = UserLogin( "username", "password", LocalHost80)
 			val wup = LocalePreference( "language", Locale.US)
-			ul.add( wup)
-			ul.preferences must contain( wup)
+			ul.preferences.+=( wup)
+			ul.preferences.value must contain( wup)
 		}
 
 		"can retrieve a preference" in {

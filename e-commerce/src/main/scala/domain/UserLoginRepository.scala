@@ -6,8 +6,6 @@ import sdo.core.infrastructure.Dao
 
 class UserLoginRepository extends Repository[ UserLogin, EntityUuidIdField] with WritableRepository[ UserLogin] {
 
-	this: Dao[UserLogin, EntityUuidIdField] =>
-
 	override def find[EntityUuidIdField]( id : EntityUuidIdField) :Option[UserLogin] = {
 		None
 	}

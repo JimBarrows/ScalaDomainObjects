@@ -22,7 +22,7 @@ trait Party{
 
 	def withARateOf = new ListField[PartyRate]
 
-	def assignedTo = new ListField[ WorkQueue]()
+	def assignedTo = new ListField[ PartyAssignment]()
 }
 
 trait PartyRole{

@@ -30,6 +30,7 @@ class WorkEffort(initialId: EntityUuidIdField) extends Entity {
 	val fulfillmentOf: List[Requirement] = Nil
 	val redoneVia: List[WorkEffort] = Nil
 	val versionOf: Option[WorkEffort] = None
+	val assignedTo = new ListField[ PartyAssignment]
 	val status = StatusListField 
 	val trackedVia = TimeEntryListField
 	def actualHours: Option[Duration] = if( actualStartDateTime.value.isEmpty || actualCompletionDateTime.value.isEmpty){
@@ -39,6 +40,11 @@ class WorkEffort(initialId: EntityUuidIdField) extends Entity {
 		}
 }
 
+object WorkEffort { 
+	
+	def apply() = new WorkEffort( EntityUuidIdField())
+}
+
 
 class StatusListField extends ListField[ Status]
 
@@ -46,13 +52,16 @@ object StatusListField {
 	def apply = new StatusListField()
 }
 
-class PartyAssignment( effective: DateRangeField, comment: TextField, assignedTo: Party, rate: Option[ AssignmentRate] = None) 
+class PartyAssignment( effective: DateRangeField = DateRangeField(), comment: TextField=TextField(), assignedTo: Party, rate: Option[ AssignmentRate] = None) 
 
 
 case class ProjectManager( effective: DateRangeField, comment: TextField, assignedTo: Party  , rate: Option[ AssignmentRate] = None) 
 	extends PartyAssignment( effective, comment, assignedTo, rate)
 
 case class TeamMember( effective: DateRangeField, comment: TextField, assignedTo: Party , rate: Option[ AssignmentRate] = None) 
+	extends PartyAssignment( effective, comment, assignedTo, rate)
+
+case class Performer( effective: DateRangeField, comment: TextField, assignedTo: Party , rate: Option[ AssignmentRate] = None) 
 	extends PartyAssignment( effective, comment, assignedTo, rate)
 
 class Status( at: DateTimeField)

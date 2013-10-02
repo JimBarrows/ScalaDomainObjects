@@ -4,15 +4,15 @@ import sdo.core.domain.{Entity, Field, EntityUuidIdField, TextField, ShortTextFi
 import sdo._
 import peopleAndOrganizations.domain.contactMechanisms._
 
-class WebAddress extends ElectronicAddress {
+class WebAddressField extends ElectronicAddressField {
 
 	val url = new UrlField()
 
 }
 
-object WebAddress {
+object WebAddressField {
 	def apply() = {
-		val wa = new WebAddress()
+		val wa = new WebAddressField()
 		wa
 	}
 }

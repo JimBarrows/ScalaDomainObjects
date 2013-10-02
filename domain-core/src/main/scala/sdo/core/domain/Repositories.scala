@@ -7,8 +7,6 @@ except with more elaborate querying capability.  Handles the transition to and f
 */
 trait Repository[T, K] {
 
-	this: Dao[T, K] =>
-
 	/** An option containing the first element in the repository that matches the id. */
 	def find[K <: EntityIdField[_]]( id : K) :Option[T]
 
