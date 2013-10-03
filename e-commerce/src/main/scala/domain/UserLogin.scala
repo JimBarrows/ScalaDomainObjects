@@ -2,9 +2,8 @@ package sdo.ecommerce.domain
 
 import java.util.Locale
 
-import org.apache.commons.codec.digest.DigestUtils._
-
 import sdo.core.domain.{Entity, Field, EntityUuidIdField, ListField, TextField, ShortTextField, ValueObject}
+import sdo.peopleAndOrganizations.domain.Party
 
 class UserLogin( initialId :EntityUuidIdField) extends Entity {
 
@@ -14,6 +13,7 @@ class UserLogin( initialId :EntityUuidIdField) extends Entity {
 	val password = PasswordField()
 	val webAddress = WebAddressField()
 	val accountStatus = AccountStatusField()
+	val owner: Option[Party] = None
 
 	val preferences = new ListField[ WebUserPreference[ _]] ()
 
@@ -45,51 +45,6 @@ object UserLogin {
 	}
 }
 
-class PasswordField extends TextField {
-
-	override def assign( newValue :Option[ String]) :Field[ String] = {
-		if (! data.equals( newValue) && (writable_? || ! initialized_? )) {
-
-			val salt = "r_Z4$ko-NdxM[_S?:Zgwz hdOfO9={"
-
-			data = newValue.map( nv => sha512Hex( nv + salt))
-			validate
-			makeDirty
-			change0.fire( newValue.get)
-		} 
-		this
-	}
-
-	
-}
-
-object PasswordField {
-
-	def apply( text :String) = new PasswordField value = text
-	def apply( ) = new PasswordField
-}
-
-/**When an account is first created, it hasn't been verified yet.  From the unverified state it can move to
-either the active or inactive state.  Active state can only move to inactive.  Inactive can move to active
-according to business rules.*/
-object AccountStatusType extends Enumeration {
-	type AccountStatusType = Value
-	val unverified, active, inactive = Value
-}
-
-import AccountStatusType._
-
-class AccountStatusField extends Field[ AccountStatusType] {
-}
-
-object AccountStatusField {
-	
-	def apply() = {
-		val asv = new AccountStatusField
-		asv.value = Some( unverified)
-		asv
-	}
-}
 
 class LocaleField extends Field[ Locale] {
 	override def toString = "LocaleField( %s)".format( data)
