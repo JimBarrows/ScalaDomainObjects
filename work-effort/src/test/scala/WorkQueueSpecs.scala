@@ -13,17 +13,17 @@ class WorkQueueSpecs extends Specification {
 
 	"The WorkQueue" should {
 
-		val workQ = new WorkQueue( EntityUuidIdField())
 
-		val party = new Party(){
-			val _id= EntityUuidIdField()	
-			override def id = _id
-			override def actingAs: List[ PartyRole] = Nil
-			override def withARateOf = new ListField[ PartyRate]()
-			override def assignedTo=new ListField[ PartyAssignment]()
-		}
 
 		"add party as a processor" in {
+			val workQ = new WorkQueue( EntityUuidIdField())
+			val party = new Party(){
+				val _id= EntityUuidIdField()	
+				override def id = _id
+				override def actingAs: List[ PartyRole] = Nil
+				override def withARateOf = new ListField[ PartyRate]()
+				override def assignedTo=new ListField[ PartyAssignment]()
+			}
 
 			workQ.processors +=  party 
 
@@ -31,6 +31,7 @@ class WorkQueueSpecs extends Specification {
 		}
 
 		"add work effort to the queue" in {
+			val workQ = new WorkQueue( EntityUuidIdField())
 			val workEffort =	WorkEffort()
 			workQ.workInProgress += workEffort 
 
@@ -42,9 +43,20 @@ class WorkQueueSpecs extends Specification {
 		}
 
 		"raise an error when a processor has been assigned more work in progress than allowed" in {
+			val workQ = new WorkQueue( EntityUuidIdField())
+			val party = new Party(){
+				val _id= EntityUuidIdField()	
+				override def id = _id
+				override def actingAs: List[ PartyRole] = Nil
+				override def withARateOf = new ListField[ PartyRate]()
+				override def assignedTo=new ListField[ PartyAssignment]()
+			}
 			workQ.processors +=  party 
 			1 to 4 foreach { _ => workQ.workInProgress +=( WorkEffort()) }
-			workQ.workInProgress.value.map( _.foreach( wip => wip.assignedTo += PartyAssignment( party)
+			println("Wip: %d".format( workQ.workInProgress.length))
+			workQ.workInProgress.value.map( _.foreach( wip => wip.assignedTo += new PartyAssignment( assignedTo = party)))
+			workQ.workInProgress.list.foreach( wip =>
+				println("Party assignedTo: %d".format( wip.assignedTo.length)))
 			workQ.validationErrors must contain( ProcessorHasMoreWipThanAllowed( party, 4, 3))
 		}
 

@@ -21,6 +21,8 @@ class WorkQueue( initialId: EntityUuidIdField) extends Entity {
 
 	val backlog = new ListField[ WorkEffort]() 
 
+	override def validations: List[ValidationFunction] = WorkQueueValidationMethods.processorCannotHaveMoreWipThanWipLimit() _ :: Nil
+
 	setup
 }
 
@@ -31,15 +33,13 @@ object WorkQueue {
 
 object WorkQueueValidationMethods {
 
-	def processorAssignedWorkOverWip( )(workQueue: WorkQueue): List[EntityError] = {
-		workQueue.processors.flatmap( processor =>
-			if( processor.assignedTo.value.getOrElse(0) > workQueue.workInProgressLimit.value.getOrElse(0) {
-				 	ProcessorHasMoreWipThanAllowed( party, 
-				 																	assigned.length, 
-				 																	workInProgressLimit.value.getOrElse(0))
-			} 
+	def processorCannotHaveMoreWipThanWipLimit( )(workQueue: WorkQueue): List[EntityError] = {
+		val wipLimit = workQueue.workInProgressLimit.value.getOrElse(BigInt(0))
+		workQueue.processors.list.filter( _.assignedTo.length > wipLimit).map( p=>
+			ProcessorHasMoreWipThanAllowed( p, 
+																			p.assignedTo.length, 
+																			wipLimit))
 	}
-
 }
 
-case class ProcessorHasMoreWipThanAllowed( party: Party, numberAssigned: Int, wipAllowed: Int) extends EntityError
+case class ProcessorHasMoreWipThanAllowed( party: Party, numberAssigned: Int, wipAllowed: BigInt) extends EntityError

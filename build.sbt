@@ -11,7 +11,8 @@ libraryDependencies in ThisBuild ++= Seq("org.specs2" %% "specs2" % "2.1.1" % "t
 		"com.h2database" % "h2" % "1.3.166" ,
 		"org.slf4j" % "slf4j-nop" % "1.6.4",
 		"com.typesafe.slick" %% "slick" % "1.0.1",
-		"commons-codec" % "commons-codec" % "1.6"				
+		"commons-codec" % "commons-codec" % "1.6",
+		"org.scalaz" %% "scalaz-core" % "7.0.4"
 		)
 
 resolvers in ThisBuild ++= Seq("snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",

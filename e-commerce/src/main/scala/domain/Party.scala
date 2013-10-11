@@ -24,8 +24,17 @@ class AutomatedAgentRole extends Role
 class HostingServer extends AutomatedAgentRole 
 
 
-class WebMasterAssignment( from: AutomatedAgentRole, to: Webmaster, period: DateRangeField)extends Relationship( from, to, period)
+class WebMasterAssignment( from: AutomatedAgentRole, 
+														to: Webmaster, 
+														period: DateRangeField)
+		extends Relationship( from, to, period)
 
-class VisitorIsp( from: Visitor, to: Isp, period: DateRangeField)extends Relationship( from, to, period)
+class VisitorIsp( from: Visitor, 
+									to: Isp, 
+									period: DateRangeField)
+		extends Relationship( from, to, period)
 
-class HostServerVisitor( from: Visitor, to: HostingServer, period: DateRangeField)extends Relationship( from, to, period)
+class HostServerVisitor( from: Visitor, 
+													to: HostingServer, 
+													period: DateRangeField)
+		extends Relationship( from, to, period)
