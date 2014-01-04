@@ -5,7 +5,7 @@ import reactive.Observing
 
 /**  An object not fundamentally defined by it's attributes, but rather by a thread of continuity and identity
 */
-trait Entity extends Observing with Validation[Entity]	with ChangeStateTracking{
+trait Entity extends Observing with ChangeStateTracking{
 
 	val id :EntityUuidIdField
 
@@ -17,7 +17,6 @@ trait Entity extends Observing with Validation[Entity]	with ChangeStateTracking{
 	  * which is not what we want, so we have to delay the setup of the obsersvers.
 	  */
 	def setup { 
-		fieldList.foreach( field => if( field != null) field.change foreach runValidations )
 		fieldList.foreach( field => if( field != null) field.change foreach updateChangeState)
 	}
 
@@ -26,16 +25,10 @@ trait Entity extends Observing with Validation[Entity]	with ChangeStateTracking{
 		state = ChangeState.clean
 		}
 
-
-	override def validationErrors :List[ValidationError] = validationErrorList ++ fieldList.flatMap( _.validationErrors) 
-
 	override def equals( that :Any) = that match {
 		case entity :Entity => entity.id == this.id
 	}
 
-	/** for some reason the Observing functionality needs a Any => Unit method, so we provide one
-	*/
-	protected def runValidations( dO :Any) :Unit = validate
 
 	/** Updates the current state based on the fields state. Any field that is dirty, the Entity is dirty, otherwise
 	  * it's clean.*/

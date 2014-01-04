@@ -2,6 +2,8 @@ package sdo.core.domain
 
 import scala.math.BigInt
 import scala.collection.mutable.MutableList
+import scalaz._
+import Scalaz._
 import java.util.{Currency, Locale, UUID}
 
 import com.github.nscala_time.time.Imports._
@@ -13,7 +15,7 @@ import reactive.CanForwardTo.eventSource
 import ValidationMethods._
 
 
-class Field[T] extends Signal[T] with Validation[Option[T]] with ChangeStateTracking{
+class Field[T] extends Signal[T] with ChangeStateTracking{
 
 	protected var data:Option[T] = None
 
@@ -23,9 +25,16 @@ class Field[T] extends Signal[T] with Validation[Option[T]] with ChangeStateTrac
 
 	override def now = data.get
 
-	override def validate :Unit = validationErrorList = validations.flatMap( v => v(data))
-
 	def value:Option[T] = data
+
+	def validations: List[ValidationNel[ValidationError, Option[T]]] = Nil
+
+	def validationErrors: ValidationNel[ValidationError, Option[T]] = 
+		(validations map {(_ : (Option[T] => Validation[ValidationError, Option[T]))
+			.apply( data).liftFailNel})
+				.sequence[({ type l[a]=ValidationNel[ValidationError, a]})#l, Option[T]] 
+					map{ case c :: _ => c
+					}}
 
 	def assign( newValue : Option[T]) :Field[T]  = {
 		if (! data.equals( newValue) && (writable_? || ! initialized_? )) {
@@ -92,7 +101,7 @@ object EntityUuidIdField {
 /** A Field consisting entirely of numbers
 */
 class NumericField extends Field[String] {
-	override def validations:List[ValidationFunction] = allNumeric _  :: Nil
+	//override def validations:List[ValidationFunction] = allNumeric _  :: Nil
 	override def toString = "NumericField( %s)".format( data)
 }
 
@@ -115,7 +124,7 @@ object NumericField {
 /** A Field consisting entirely of alphabetic characters, and punctuation
 */
 class AlphaField extends Field[String] {
-	override def validations:List[ValidationFunction] = allAlpha _  :: Nil
+	//override def validations:List[ValidationFunction] = allAlpha _  :: Nil
 	override def toString = "AlphaField( %s)".format( data)
 }
 
@@ -152,7 +161,7 @@ object IntegerField {
 
 /** A field that can be anything that will fit in a string, but isn't that long.*/
 class ShortTextField extends Field[String] {
-	override def validations :List[ValidationFunction] = maxLength( 140) _:: Nil
+	//override def validations :List[ValidationFunction] = maxLength( 140) _:: Nil
 	override def toString = "ShortTextField( %s)".format( data)
 }
 
