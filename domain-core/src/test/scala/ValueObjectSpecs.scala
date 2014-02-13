@@ -1,4 +1,4 @@
-package sdo.specs
+package sdo.core.specs
 
 import org.specs2.mutable._
 import sdo.core.domain.{ValueObject, Field, NumericField}

@@ -1,4 +1,4 @@
-package sdo.specs
+package sdo.core.specs
 
 import org.specs2.mutable.Specification
 import org.specs2.execute.Pending

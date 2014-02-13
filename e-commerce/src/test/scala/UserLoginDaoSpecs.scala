@@ -1,4 +1,4 @@
-package test
+package sdo.ecommerce.specs
 
 import org.specs2.mutable._
 import sdo.core.domain._

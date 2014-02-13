@@ -1,11 +1,13 @@
 package sdo.workEffort.domain
 
+import scalaz._
+import Scalaz._
 import sdo.core.domain.{Entity, 
-												EntityError,
-												EntityUuidIdField,
-												Field,
-												IntegerField,
-												ListField}
+						EntityError,
+						EntityUuidIdField,
+						Field,
+						IntegerField,
+						ListField}
 
 class WorkQueue( initialId: EntityUuidIdField) extends Entity {
 
@@ -21,7 +23,7 @@ class WorkQueue( initialId: EntityUuidIdField) extends Entity {
 
 	val backlog = new ListField[ WorkEffort]() 
 
-	override def validations: List[ValidationFunction] = WorkQueueValidationMethods.processorCannotHaveMoreWipThanWipLimit() _ :: Nil
+	override def validate = WorkQueueValidationMethods.processorCannotHaveMoreWipThanWipLimit(this)
 
 	setup
 }
@@ -33,13 +35,15 @@ object WorkQueue {
 
 object WorkQueueValidationMethods {
 
-	def processorCannotHaveMoreWipThanWipLimit( )(workQueue: WorkQueue): List[EntityError] = {
-		val wipLimit = workQueue.workInProgressLimit.value.getOrElse(BigInt(0))
-		workQueue.processors.list.filter( _.assignedTo.length > wipLimit).map( p=>
-			ProcessorHasMoreWipThanAllowed( p, 
-																			p.assignedTo.length, 
-																			wipLimit))
+	def processorCannotHaveMoreWipThanWipLimit(workQueue: WorkQueue):  ValidationNel[EntityError, WorkQueue] = {
+		val wipLimit = workQueue.workInProgressLimit.value.getOrElse( 0)
+		val processorsWithMoreWip = workQueue.processors.list.filter( _.assignedTo.length > wipLimit)
+		if( processorsWithMoreWip.isEmpty) 
+		  workQueue.successNel[EntityError]
+		else		
+			ProcessorHasMoreWipThanAllowed( processorsWithMoreWip, 	wipLimit).failureNel[WorkQueue] 
+				
 	}
 }
 
-case class ProcessorHasMoreWipThanAllowed( party: Party, numberAssigned: Int, wipAllowed: BigInt) extends EntityError
+case class ProcessorHasMoreWipThanAllowed( party: List[Party], wipAllowed: Int) extends EntityError

@@ -40,3 +40,4 @@ src_managed
 target/
 test-output
 tmp*
+/bin
