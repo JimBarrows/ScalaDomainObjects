@@ -1,4 +1,4 @@
-package test
+package sdo.ecommerce.specs
 
 import org.specs2.mutable._
 
@@ -263,3 +263,4 @@ class UrlSpecs extends Specification {
 	    }
  	}
 }
+

@@ -1,4 +1,4 @@
-package test
+package sdo.ecommerce.specs
 
 import org.specs2.mutable._
 
@@ -37,3 +37,4 @@ class ParameterSpecs extends Specification {
 	}
 	
 }
+
