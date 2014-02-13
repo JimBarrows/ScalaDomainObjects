@@ -15,6 +15,7 @@
 *.swp
 *tar.gz
 *.war
+.cache
 .classpath
 .CVS
 .DS_Store
