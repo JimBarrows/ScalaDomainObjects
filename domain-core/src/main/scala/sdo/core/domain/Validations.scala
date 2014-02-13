@@ -65,8 +65,8 @@ object ValidationMethods {
   def notAllZeros(value: Option[String]): ValidationNel[FieldError, Option[String]] =
     value match {
       case Some(v) => allZerosRegex findFirstIn v match {
-        case Some(f) => value.successNel[FieldError]
-        case None => MustBeAlpha(v).failNel[Option[String]]
+        case Some(f) => CannotBeAllZeros(v).failNel[Option[String]]
+        case None => value.successNel[FieldError]
       }
       case None => value.successNel[FieldError]
     }
@@ -74,8 +74,8 @@ object ValidationMethods {
   def not666(value: Option[String]): ValidationNel[FieldError, Option[String]] =
     value match {
       case Some(v) => triple6 findFirstIn v match {
-        case Some(f) => value.successNel[FieldError]
-        case None => MustBeAlpha(v).failNel[Option[String]]
+        case Some(f) => CannotContain666(v).failNel[Option[String]]
+        case None => value.successNel[FieldError] 
       }
       case None => value.successNel[FieldError]
     }
