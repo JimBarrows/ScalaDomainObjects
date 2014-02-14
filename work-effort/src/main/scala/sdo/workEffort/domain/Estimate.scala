@@ -5,14 +5,13 @@ import sdo.core.domain.Field
 
 trait Estimate
 
-case class HoursEstimate( hours: Hours) extends Estimate
-case class PointsEstiamte( points: Int) extends Estimate
+case class HoursEstimate(hours: Hours) extends Estimate
+case class PointsEstiamte(points: Int) extends Estimate
 
 class EstimateField extends Field[Estimate]
 
 object EstimateField {
-	
-	def apply = new EstimateField
-}
 
+  def apply = new EstimateField
+}
 
