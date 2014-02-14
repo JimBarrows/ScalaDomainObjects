@@ -1,8 +1,8 @@
 package sdo.ecommerce.specs
 
 import org.specs2.mutable._
-
-import sdo.ecommerce.domain.{Parameter, Url, DomainName, Http}
+import sdo.ecommerce.domain.{Parameter, Url, Http}
+import sdo.ecommerce.domain.DomainName
 import sdo.ecommerce.domain.Protocol._
 
 

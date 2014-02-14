@@ -1,12 +1,10 @@
 package sdo.ecommerce.domain
 
 import scalaz._
-import Scalaz._
-import sdo.core.domain.{ Entity, EntityUuidIdField, Field, FieldError, TextField, ShortTextField, ValueObject }
+import scalaz.Scalaz._
+import sdo.core.domain.{Field, FieldError}
 import sdo.core.domain.ValidationMethods._
-import sdo.peopleAndOrganizations.domain.contactMechanisms._
-import sdo.ecommerce.domain
-import sdo.core.domain.FieldError
+import sdo.peopleAnOrganizations.domain.ElectronicAddressField
 
 class WebAddressField extends ElectronicAddressField {
 

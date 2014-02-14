@@ -1,4 +1,4 @@
-package sdo.ecommerce.domain
+package sdo.ecommerce.services
 
 import sdo.core.domain.Service
 

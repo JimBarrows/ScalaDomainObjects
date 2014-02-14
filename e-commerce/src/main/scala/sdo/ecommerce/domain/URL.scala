@@ -1,7 +1,7 @@
 package sdo.ecommerce.domain 
-			
-	import java.net.URLEncoder
-	import java.net.{URL => JavaUrl}
+
+import java.net.{URL => JavaUrl}
+import java.net.URLEncoder
 			
 	/**
 	 *

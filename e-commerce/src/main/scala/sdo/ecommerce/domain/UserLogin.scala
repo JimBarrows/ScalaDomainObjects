@@ -1,9 +1,8 @@
 package sdo.ecommerce.domain
 
 import java.util.Locale
-
 import sdo.core.domain.{Entity, Field, EntityUuidIdField, ListField, TextField, ShortTextField, ValueObject}
-import sdo.peopleAndOrganizations.domain.Party
+import sdo.peopleAnOrganizations.domain.Party
 
 class UserLogin( initialId :EntityUuidIdField) extends Entity {
 
