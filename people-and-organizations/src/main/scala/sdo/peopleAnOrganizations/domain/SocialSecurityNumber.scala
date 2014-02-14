@@ -1,7 +1,7 @@
-package sdo.peopleAndOrganizations.domain
+package sdo.peopleAnOrganizations.domain
 
 import scalaz._
-import Scalaz._
+import scalaz.Scalaz._
 import sdo.core.domain._
 import sdo.core.domain.ValidationMethods._
 

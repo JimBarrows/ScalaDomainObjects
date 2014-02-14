@@ -1,10 +1,7 @@
-package sdo.specs
+package test.peopleAndOrganizations
 
 import org.specs2.mutable._
-import reactive.{Observing, Var}
 import sdo.core.domain._
-import sdo.core.domain.ValidationMethods.noErrors
-import sdo.peopleAndOrganizations._
 
 class SocialSecurityFieldSpecs extends Specification {
 

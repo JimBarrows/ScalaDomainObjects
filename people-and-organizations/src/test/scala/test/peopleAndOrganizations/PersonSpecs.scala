@@ -1,9 +1,7 @@
-package sdo.specs
+package test.peopleAndOrganizations
 
 import org.specs2.mutable.Specification
-import org.specs2.execute.Pending
 import sdo.core.domain._
-import sdo.peopleAndOrganizations._
 
 
 class PersonSpecs extends Specification {
