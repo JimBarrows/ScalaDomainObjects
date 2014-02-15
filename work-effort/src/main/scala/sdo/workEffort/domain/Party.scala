@@ -7,11 +7,11 @@ trait Party {
 
   def id: EntityUuidIdField
 
-  def actingAs = new ListField[PartyRole]
+  def actingAs: ListField[PartyRole]
 
-  def withARateOf = new ListField[PartyRate]
+  val withARateOf = new ListField[PartyRate]()
 
-  def assignedTo = new ListField[PartyAssignment]()
+  val assignedTo = new  ListField[PartyAssignment]()
 }
 
 trait PartyRole {

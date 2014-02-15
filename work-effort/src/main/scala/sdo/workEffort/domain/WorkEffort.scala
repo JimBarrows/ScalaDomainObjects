@@ -1,6 +1,8 @@
 package sdo.workEffort.domain
 import org.joda.time.Duration
 import sdo.core.domain.{ DateField, DateRangeField, DateTimeField, Entity, EntityUuidIdField, IntegerField, ListField, MoneyField, TextField }
+import sdo.core.domain.ValueObject
+import sdo.core.domain.Field
 
 class WorkEffort(initialId: EntityUuidIdField) extends Entity {
 
@@ -29,8 +31,11 @@ class WorkEffort(initialId: EntityUuidIdField) extends Entity {
   }
   
   def assignTo( party: Party) = {
-    val pa = new PartyAssignment(assignedTo = party)
+    
+    val pa = PartyAssignment(this, party)
+    party.assignedTo += pa    
     assignedTo.add(pa)
+        
     pa
   }
 }
@@ -46,16 +51,29 @@ object StatusListField {
   def apply = new StatusListField()
 }
 
-class PartyAssignment(effective: DateRangeField = DateRangeField(), comment: TextField = TextField(), assignedTo: Party, rate: Option[AssignmentRate] = None)
+class PartyAssignment extends ValueObject {
+  val partyAssigned = new Field[Party]
+  val assignment = new Field[WorkEffort]
+  val effective: DateRangeField = DateRangeField() 
+  val comment: TextField = TextField()   
+  val rate: Option[AssignmentRate] = None
+}
 
-case class ProjectManager(effective: DateRangeField, comment: TextField, assignedTo: Party, rate: Option[AssignmentRate] = None)
-  extends PartyAssignment(effective, comment, assignedTo, rate)
+object PartyAssignment {
+  
+  def apply(assignment: WorkEffort, assignedTo: Party) = {
+    val pa = new PartyAssignment
+    pa.assignment.value = assignment
+    pa.partyAssigned.value = assignedTo
+    pa
+  }
+}
 
-case class TeamMember(effective: DateRangeField, comment: TextField, assignedTo: Party, rate: Option[AssignmentRate] = None)
-  extends PartyAssignment(effective, comment, assignedTo, rate)
+class ProjectManager extends PartyAssignment
 
-case class Performer(effective: DateRangeField, comment: TextField, assignedTo: Party, rate: Option[AssignmentRate] = None)
-  extends PartyAssignment(effective, comment, assignedTo, rate)
+class TeamMember extends PartyAssignment
+
+case class Performer  extends PartyAssignment
 
 class Status(at: DateTimeField)
 
