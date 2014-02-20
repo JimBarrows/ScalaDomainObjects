@@ -1,18 +1,15 @@
-package sdo.workeffort.specs
+package test.kanban
 
+import scalaz._
+import Scalaz._
 import org.specs2.mutable.Specification
-import org.specs2.execute.Pending
-import sdo.core.domain.{ EntityUuidIdField, ListField }
-import sdo.workEffort.domain.{
-  Party,
-  PartyAssignment,
-  PartyRate,
-  PartyRole,
-  ProcessorHasMoreWipThanAllowed,
-  WorkEffort,
-  WorkQueue
-}
-import scalaz.Failure
+import sdo.core.domain.EntityUuidIdField
+import sdo.core.domain.ListField
+import sdo.workEffort.domain.WorkQueue
+import sdo.kanban.domain.Person
+import sdo.workEffort.domain.WorkEffort
+import sdo.workEffort.domain.PartyAssignment
+import sdo.workEffort.domain.ProcessorHasMoreWipThanAllowed
 
 class WorkQueueSpecs extends Specification {
 
@@ -20,17 +17,11 @@ class WorkQueueSpecs extends Specification {
 
     "add party as a processor" in {
       val workQ = new WorkQueue(EntityUuidIdField())
-      val party = new Party() {
-        val _id = EntityUuidIdField()
-        override def id = _id
-        override def actingAs: List[PartyRole] = Nil
-        override def withARateOf = new ListField[PartyRate]()
-        override def assignedTo = new ListField[PartyAssignment]()
-      }
+      val person = new Person(EntityUuidIdField()) 
 
-      workQ.processors += party
+      workQ.processors += person
 
-      workQ.processors.exists(_.id.value == party.id.value) must beTrue
+      workQ.processors.exists(_.id.value == person.id.value) must beTrue
     }
 
     "add work effort to the queue" in {
@@ -41,25 +32,26 @@ class WorkQueueSpecs extends Specification {
       workQ.workInProgress.exists(_.id.value == workEffort.id.value) must beTrue
     }
 
-    "raise an error is a work effort is assigned to a party not assigned to the work queue" in {
+    "raise an error is a work effort is assigned to a person not assigned to the work queue" in {
       pending
     }
 
     "raise an error when a processor has been assigned more work in progress than allowed" in {
       val workQ = new WorkQueue(EntityUuidIdField())
-      val party = new Party() {
-        val _id = EntityUuidIdField()
-        override def id = _id
-        override def actingAs: List[PartyRole] = Nil
-        override def withARateOf = new ListField[PartyRate]()
-        override def assignedTo = new ListField[PartyAssignment]()
-      }
-      workQ.processors += party
-      1 to 4 foreach { _ => workQ.workInProgress += (WorkEffort()) }
-      println("Wip: %d".format(workQ.workInProgress.length))
-      workQ.workInProgress.value.map(_.foreach(wip => wip.assignedTo += new PartyAssignment(assignedTo = party)))
-      workQ.workInProgress.list.foreach(wip =>
-        println("Party assignedTo: %d".format(wip.assignedTo.length)))
+      val person = new Person(EntityUuidIdField())
+        
+      workQ.processors += person
+      
+      workQ.workInProgressLimit.value = 3
+      
+      1 to 4 foreach { _ => workQ.workInProgress += (WorkEffort()) }      
+      println("wip set to: %d".format(workQ.workInProgress.length))
+      
+      workQ.workInProgress.list.foreach( _.assignTo( person))
+      
+      person.assignedTo.value.foreach( f => 
+        println("Person %s is assigned %s".format(person.id.value, f.toString)))
+        
       workQ.validate must_== Failure(ProcessorHasMoreWipThanAllowed(workQ.processors.value.get.toList, 3))
     }
 

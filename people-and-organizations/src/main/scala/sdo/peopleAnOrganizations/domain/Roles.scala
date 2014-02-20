@@ -3,12 +3,18 @@ package sdo.peopleAnOrganizations.domain
 import sdo.core.domain._
 import sdo.core.domain.ValidationMethods._
 
-trait RolesToPlay {
+/**Trait to manage the roles an entity might play.
+ * 
+ */
+trait RolesToPlay[T <: Role] {
 
-  val roles = new ListField[RoleField]()
+  val roles = new ListField[T]()
 }
 
-trait Role extends Contactable {
+/**Base class for all roles.
+ * 
+ */
+class Role extends ValueObject {
   val applies = DateRangeField()
 }
 
@@ -16,28 +22,24 @@ class RoleField extends Field[Role] {
   override def toString = "RoleField( %s)".format(value.toString)
 }
 
-trait PersonRole extends Role
+trait PartyRole extends Role
 
-class Employee extends PersonRole {
-}
+trait PersonRole extends PartyRole
 
-trait OrganizationRole extends Role
+trait OrganizationRole extends PartyRole
 
-class OrganizationUnit extends OrganizationRole {
-}
+class Employee extends PersonRole 
 
-class Partner extends OrganizationRole {
-}
+class OrganizationUnit extends OrganizationRole 
 
-class InternalOrganization extends OrganizationRole {
-}
+class Partner extends OrganizationRole 
 
-class ConsumerRole extends PersonRole with OrganizationRole {
-}
+class InternalOrganization extends OrganizationRole 
+
+class ConsumerRole extends PersonRole with OrganizationRole 
 
 class Customer extends ConsumerRole
 
 class BillTocustomer extends Customer
 
 class Prospect extends ConsumerRole
-

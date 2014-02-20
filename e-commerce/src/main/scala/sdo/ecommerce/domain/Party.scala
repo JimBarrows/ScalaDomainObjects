@@ -7,10 +7,11 @@ import sdo.peopleAnOrganizations.domain.PersonRole
 import sdo.peopleAnOrganizations.domain.Party
 import sdo.peopleAnOrganizations.domain.OrganizationRole
 import sdo.peopleAnOrganizations.domain.Role
+import sdo.peopleAnOrganizations.domain.PartyRole
 
 class AutomatedAgent(initialId: EntityUuidIdField) extends Entity
   with Party
-  with RolesToPlay {
+  with RolesToPlay[PartyRole] {
   override val id = initialId
 }
 

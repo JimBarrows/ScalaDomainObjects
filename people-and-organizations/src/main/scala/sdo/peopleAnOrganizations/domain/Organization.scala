@@ -5,7 +5,7 @@ import sdo.core.domain.{ Entity, Field, EntityUuidIdField, TextField }
 class Organization(initialId: EntityUuidIdField) extends Entity
   with Party
   with Classifications
-  with RolesToPlay
+  with RolesToPlay[OrganizationRole]
   with Contactable {
 
   override val id = initialId

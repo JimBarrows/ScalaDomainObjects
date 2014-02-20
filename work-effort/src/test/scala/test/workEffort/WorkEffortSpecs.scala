@@ -6,9 +6,10 @@ import sdo.workEffort.domain.WorkEffort
 import sdo.workEffort.domain.Party
 import sdo.core.domain.EntityUuidIdField
 import sdo.core.domain.ListField
-import sdo.workEffort.domain.PartyRole
 import sdo.workEffort.domain.PartyRate
 import sdo.workEffort.domain.PartyAssignment
+import sdo.peopleAnOrganizations.domain.PartyRole
+import sdo.workEffort.domain.Worker
 
 class WorkEffortSpecs extends Specification {
 
@@ -27,7 +28,7 @@ class WorkEffortSpecs extends Specification {
       
       val _id = EntityUuidIdField()
       
-      val _actingAs = new ListField[PartyRole]()     
+      val _actingAs = new ListField[Worker]()     
       
       def id = _id
 
