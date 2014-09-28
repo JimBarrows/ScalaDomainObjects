@@ -6,7 +6,6 @@ import java.util.UUID
 
 import org.joda.time.DateMidnight
 
-import reactive.{ Signal, EventStream, EventSource, Observing, CanForwardTo, Forwardable, NamedFunction }
 import ValidationMethods._
 
 /**

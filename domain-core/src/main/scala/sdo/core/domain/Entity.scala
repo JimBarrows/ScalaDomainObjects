@@ -2,18 +2,15 @@ package sdo.core.domain
 
 import scalaz._
 import Scalaz._
-import org.scalastuff.scalabeans.Preamble._
-import reactive.Observing
+
 import EntityValidationMethods._
 
 /**
  * An object not fundamentally defined by it's attributes, but rather by a thread of continuity and identity
  */
-trait Entity extends Observing with ChangeStateTracking {
+trait Entity  extends ChangeStateTracking {
 
   val id: EntityUuidIdField
-
-  def descriptor = descriptorOf[Entity]
 
   def fieldList: List[Field[_]] = Nil
 
@@ -22,7 +19,7 @@ trait Entity extends Observing with ChangeStateTracking {
    * which is not what we want, so we have to delay the setup of the obsersvers.
    */
   def setup {
-    fieldList.foreach(field => if (field != null) field.change foreach updateChangeState)
+    
   }
 
   def validate: ValidationNel[EntityError, Entity] = allFieldsValid( this)
@@ -31,6 +28,8 @@ trait Entity extends Observing with ChangeStateTracking {
     fieldList.foreach(f => f.makeClean)
     state = ChangeState.clean
   }
+
+  override def dirty_? = fieldList.exists(_.dirty_?)
 
   override def equals(that: Any) = that match {
     case entity: Entity => entity.id == this.id

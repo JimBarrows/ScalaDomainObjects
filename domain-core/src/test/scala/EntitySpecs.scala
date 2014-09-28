@@ -3,7 +3,6 @@ package sdo.core.specs
 import com.github.nscala_time.time.Imports._
 import org.specs2.mutable.Specification
 import org.specs2.execute.Pending
-import org.scalastuff.scalabeans.Preamble._
 import sdo.core.domain.{ Entity, Field, NumericField, AlphaField, EntityUuidIdField, DateTimeField, TextField }
 import sdo.core.domain.{ EntityError, ValidationError, MustBeNumeric, OnlyOneFieldCanHaveValue, FieldsAreInvalid }
 import sdo.core.domain.EntityValidationMethods._
@@ -12,13 +11,10 @@ import scalaz.Failure
 import scalaz.NonEmptyList
 import sdo.core.domain.ChangeStateTracking
 import sdo.core.domain.ChangeState
-import reactive.EventSource
 
 class Test(initialId: EntityUuidIdField) extends Entity {
 
   override val id = initialId
-
-  override def descriptor = descriptorOf[Test]
 
   val numeric = new NumericField()
 
@@ -85,7 +81,6 @@ class EntitySpecs extends Specification {
 
     "Should receive only 1 notification for a change" in {
       pending("More work on FRP")
-      import reactive.EventSource
       var callCount = 0
 
       class Foo(initialId: EntityUuidIdField) extends Test(initialId) {

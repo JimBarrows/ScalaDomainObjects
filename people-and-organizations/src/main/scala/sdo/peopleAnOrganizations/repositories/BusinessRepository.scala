@@ -1,7 +1,6 @@
 package sdo.peopleAnOrganizations.repositories
 
 import sdo.core.domain.{ Repository, EntityUuidIdField, Predicate, WritableRepository }
-import sdo.core.infrastructure.Dao
 import sdo.peopleAnOrganizations.domain.Organization
 
 
@@ -11,7 +10,6 @@ import sdo.peopleAnOrganizations.domain.Organization
 trait BusinessRepository extends Repository[Organization, EntityUuidIdField]
   with WritableRepository[Organization] {
 
-  this: Dao[Organization, EntityUuidIdField] =>
 
   /** An option containing the first element in the repository that matches the id. */
   override def find[EntityUuidIdField](id: EntityUuidIdField): Option[Organization] = {

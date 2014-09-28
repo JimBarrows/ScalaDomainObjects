@@ -3,26 +3,22 @@ package sdo.core.domain
 import scala.math.BigInt
 import scala.collection.mutable.MutableList
 import scalaz._
+import std.AllInstances._
 import Scalaz._
 import java.util.{ Currency, Locale, UUID }
 
 import com.github.nscala_time.time.Imports._
 import org.joda.time.DateMidnight
 
-import reactive.{ Signal, EventStream, EventSource, Observing, CanForwardTo, Forwardable, NamedFunction }
-import reactive.CanForwardTo.vari
-import reactive.CanForwardTo.eventSource
 import ValidationMethods._
 
-class Field[T] extends Signal[T] with ChangeStateTracking {
+class Field[T] extends ChangeStateTracking {
 
   protected var data: Option[T] = None
 
   private var writable = true
 
   def writable_? = writable
-
-  override def now = data.get
 
   def value: Option[T] = data
 
@@ -33,7 +29,6 @@ class Field[T] extends Signal[T] with ChangeStateTracking {
       data = newValue
       validate
       makeDirty
-      change0.fire(newValue.get)
     }
     this
   }
@@ -50,28 +45,9 @@ class Field[T] extends Signal[T] with ChangeStateTracking {
 
   def makeReadOnly: Unit = writable = false
 
-  lazy val change: EventStream[T] = change0
-
-  protected lazy val change0 = new EventSource[T]
-
-  def <-->(other: Field[T])(implicit observing: Observing): this.type = {
-    this.distinct >> other
-    other.distinct >> this
-    this
-  }
-
   override def toString = "Field[T]( %s)".format(data)
 }
 
-object Field {
-
-  implicit def vari[T]: CanForwardTo[Field[T], T] = new CanForwardTo[Field[T], T] {
-    def forwarder(t: => Field[T]) = NamedFunction(">>" + t.debugName)(t.update)
-  }
-  implicit def eventSource[T]: CanForwardTo[EventSource[T], T] = new CanForwardTo[EventSource[T], T] {
-    def forwarder(t: => EventSource[T]) = NamedFunction(">>" + t.debugString)(t.fire)
-  }
-}
 
 class EntityIdField[T](id: T) extends Field[T] {
   override def writable_? = false
@@ -210,7 +186,6 @@ class ListField[T] extends Field[MutableList[T]] {
       l += newValue
       validate
       makeDirty
-      change0.fire(l)
     }
   })
 
@@ -229,7 +204,6 @@ class ListField[T] extends Field[MutableList[T]] {
       val newList = l.diff(value :: Nil)
       validate
       makeDirty
-      change0.fire(newList)
       newList
     } else {
       l

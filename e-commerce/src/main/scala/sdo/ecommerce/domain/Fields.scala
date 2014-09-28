@@ -35,7 +35,6 @@ class PasswordField extends TextField {
       data = newValue.map(nv => sha512Hex(nv + PasswordField.salt))
       validate
       makeDirty
-      change0.fire(newValue.get)
     }
     this
   }

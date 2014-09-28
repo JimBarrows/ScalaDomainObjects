@@ -16,7 +16,7 @@ case class MustBeNumeric(badValue: String) extends FieldError
 case class MustBeAlpha(badValue: String) extends FieldError
 
 case class OnlyOneFieldCanHaveValue(fields: List[Field[_]]) extends EntityError
-case class FieldsAreInvalid extends EntityError
+case class FieldsAreInvalid () extends EntityError
 
 object EntityValidationMethods {
 

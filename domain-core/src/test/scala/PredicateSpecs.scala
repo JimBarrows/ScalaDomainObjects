@@ -2,7 +2,6 @@ package sdo.core.specs
 
 import org.specs2.mutable.Specification
 import org.specs2.execute.Pending
-import org.scalastuff.scalabeans.Preamble._
 import sdo.core.domain.{Entity, Field, BooleanField, Predicate, AndPredicate, OrPredicate, NotPredicate, EntityUuidIdField }
 import sdo.core.domain.{MustBeNumeric, OnlyOneFieldCanHaveValue}
 import sdo.core.domain.EntityValidationMethods.onlyOneHasValue
@@ -12,8 +11,6 @@ class PredicateSpecs extends Specification {
 	class PredicateEntity( initialId :EntityUuidIdField) extends Entity {
 
 		override val id = initialId
-
-		override def descriptor = descriptorOf[PredicateEntity]
 
 		//val id = initialId
 		val satisfy = new BooleanField()

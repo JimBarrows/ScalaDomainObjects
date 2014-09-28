@@ -1,7 +1,5 @@
 package sdo.core.domain
 
-import sdo.core.infrastructure.Dao
-
 /**Represents all objects fo a certain type as a conceptual set.  It acts like a collection,
 except with more elaborate querying capability.  Handles the transition to and from storage.
 */
