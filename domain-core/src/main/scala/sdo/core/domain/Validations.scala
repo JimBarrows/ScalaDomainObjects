@@ -14,6 +14,7 @@ case class CannotBeShorterThan(length: Int, badValue: String) extends FieldError
 case class LessThanMinimum(minimum: BigInt, badValue: BigInt) extends FieldError
 case class MustBeNumeric(badValue: String) extends FieldError
 case class MustBeAlpha(badValue: String) extends FieldError
+case class MustBeExactly( length: Int, badValue: String) extends FieldError
 
 case class OnlyOneFieldCanHaveValue(fields: List[Field[_]]) extends EntityError
 case class FieldsAreInvalid () extends EntityError
@@ -89,6 +90,12 @@ object ValidationMethods {
       case Some(v) if (v.length > length) => CannotBeShorterThan(length, v).failNel[Option[String]]
       case _ => value.successNel[FieldError]
     }
+
+  def exactLength(length: Int)(value: Option[String]): ValidationNel[FieldError, Option[String]] =
+    value match {
+      case Some(v) if (v.length != length) => MustBeExactly(length, v).failNel[Option[String]]
+      case _ => value.successNel[FieldError]
+  }
 
   def minimum(minimum: Int)(value: Option[Int]): ValidationNel[FieldError, Option[Int]] =
     value match {

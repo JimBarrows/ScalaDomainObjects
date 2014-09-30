@@ -5,6 +5,8 @@ import scalaz.Scalaz._
 import sdo.core.domain._
 import sdo.core.domain.ValidationMethods._
 
+/** Base class for all 3 fields in a SSN number.  Forces them to be numeric.
+*/
 class SsnNumber extends NumericField {
 
   override def validate = super.validate.flatMap(notAllZeros(_))
@@ -15,30 +17,6 @@ case class AreaCannotBeBetween734And749(badValue: String) extends FieldError
 case class CannotBeOver772(badValue: String) extends FieldError
 case class CannotBeBetween987_65_4320To987_65_4329(badValue: SSN) extends FieldError
 
-class AreaNumber extends SsnNumber {
-
-  override def validate = super.validate.flatMap(not666 _).flatMap(maxLength(3) _).flatMap(notBetween734And749 _).flatMap(notOver772 _)
-
-  def notBetween734And749(value: Option[String]): ValidationNel[FieldError, Option[String]] =
-    value match {
-      case Some(v) => """^7[34][4-9]$""".r findFirstIn v match {
-        case None => AreaCannotBeBetween734And749(v).failNel[Option[String]]
-        case _ => value.successNel[FieldError]
-      }
-      case None => value.successNel[FieldError]
-    }
-
-  def notOver772(value: Option[String]): ValidationNel[FieldError, Option[String]] =
-    value match {
-      case Some(v) => """^[8-9][8-9][3-9]$""".r findFirstIn v match {
-        case None => CannotBeOver772(v).failNel[Option[String]]
-        case _ => value.successNel[FieldError]
-      }
-      case None => value.successNel[FieldError]
-    }
-
-}
-
 object AreaNumber {
   def apply(number: String) = {
     val n = new AreaNumber()
@@ -47,6 +25,36 @@ object AreaNumber {
   }
 
   def unapply(a: AreaNumber) = a.value
+
+  def notBetween734And749(value: Option[String]): ValidationNel[FieldError, Option[String]] =
+    value match {
+      case Some(v) => {
+        if ((734 to 749) contains v.toInt ){
+          AreaCannotBeBetween734And749(v).failNel[Option[String]]
+        } else {
+          value.successNel[FieldError]
+        }
+      }
+
+      case None => value.successNel[FieldError]
+    }
+
+  def notOver772(value: Option[String]): ValidationNel[FieldError, Option[String]] =
+    value match {
+      case Some(v) => 
+        if( v.toInt > 772) {
+          CannotBeOver772(v).failNel[Option[String]]
+        } else {
+          value.successNel[FieldError]
+        }
+      case None => value.successNel[FieldError]
+    }
+}
+
+class AreaNumber extends SsnNumber {
+  import AreaNumber._
+  override def validate = super.validate.flatMap(not666 _).flatMap(exactLength(3) _).flatMap(notBetween734And749 _).flatMap(notOver772 _)
+
 }
 
 class GroupNumber extends SsnNumber {
@@ -84,7 +92,10 @@ sealed case class SSN(area: Option[AreaNumber], group: Option[GroupNumber], seri
 
 class SocialSecurityNumberField extends Field[SSN] {
 
-  override def validate = super.validate.flatMap(not987_65_4320To987_65_4329 _)
+  override def validate = {
+    val area = value.map { _.area.getOrElse(AreaNumber("123"))}.getOrElse(AreaNumber("123"))
+    super.validate.flatMap(not987_65_4320To987_65_4329 _) |@| area.validate //.flatMap(groupValidate).flatMap( serialValidate)
+  }
 
   def not987_65_4320To987_65_4329(value: Option[SSN]): ValidationNel[FieldError, Option[SSN]] =
     value match {
