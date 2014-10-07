@@ -11,7 +11,8 @@ libraryDependencies in ThisBuild ++= Seq(
 		    "org.slf4j" % "slf4j-nop" % "1.7.7",
 		    "com.typesafe.slick" %% "slick" % "2.1.0",
 		    "commons-codec" % "commons-codec" % "1.9",
-		    "org.scalaz" %% "scalaz-core" % "7.1.0"
+		    "org.scalaz" %% "scalaz-core" % "7.1.0",
+		    "org.typelevel" %% "scalaz-specs2" % "0.3.0" % "test"
 		)
 
 resolvers in ThisBuild ++= Seq(

@@ -47,8 +47,7 @@ class UserLoginSpecs extends Specification {
 			ul.preferences.+=( wup2)
 		
 			ul.preferences.find( p => {
-				println("name: %s value: %s".format( p.name, p.name.value))
-				p.name.value.equals(Some("language"))
+				p.value.getOrElse("")//.name = (Some("language"))
 				}) must beSome( wup)
 		}
 

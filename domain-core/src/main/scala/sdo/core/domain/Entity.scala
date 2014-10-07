@@ -22,7 +22,7 @@ trait Entity  extends ChangeStateTracking {
     
   }
 
-  def validate: ValidationNel[EntityError, Entity] = allFieldsValid( this)
+  def validate(e: Entity): ValidationNel[EntityError, Entity] =  e.successNel[EntityError]
 
   override def makeClean: Unit = {
     fieldList.foreach(f => f.makeClean)

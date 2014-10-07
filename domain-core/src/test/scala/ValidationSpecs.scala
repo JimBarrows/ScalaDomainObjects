@@ -6,6 +6,7 @@ import org.specs2.mutable._
 import sdo.core.domain._
 import sdo.core.domain.ValidationMethods._
 import sdo.core.domain.EntityValidationMethods._
+import org.specs2.scalaz.ValidationMatchers._
 
 class ValidationSpecs extends Specification {
 
@@ -17,13 +18,13 @@ class ValidationSpecs extends Specification {
 			allNumeric( None) must_== Success(None)
 		}
 		"return MustBeNumeric with a value of a123" in {
-			allNumeric( Some("a123")) must_==  Failure(NonEmptyList( MustBeNumeric( "a123")))
+			allNumeric( Some("a123")) must beFailing
 		}
 		"return MustBeNumeric with a value of 1a23" in {
-			allNumeric( Some("1a23")) must_==  Failure(NonEmptyList( MustBeNumeric( "1a23")))
+			allNumeric( Some("1a23")) must beFailing
 		}
 		"return MustBeNumeric with a value of 123a" in {
-			allNumeric( Some("123a")) must_==  Failure(NonEmptyList( MustBeNumeric( "123a")))
+			allNumeric( Some("123a")) must beFailing
 		}
 		"validate 100 is not all zeros" in {
 			notAllZeros( Some("100")) must_== Success(Some("100"))
@@ -38,10 +39,10 @@ class ValidationSpecs extends Specification {
 			notAllZeros( None)  must_== Success(None)
 		}
 		"return CannotBeAllZeros( 000) when all zeros" in {
-			notAllZeros( Some("000")) must_==  Failure(NonEmptyList( CannotBeAllZeros("000")))
+			notAllZeros( Some("000")) must beFailing
 		}
 		"return CannotBeAllZeros( 0) when all zeros" in {
-			notAllZeros( Some("0")) must_==  Failure(NonEmptyList( CannotBeAllZeros("0")))
+			notAllZeros( Some("0")) must beFailing
 		}
 		"validate 100 is not all 666" in {
 			not666( Some("100")) must_== Success(Some("100"))
@@ -56,7 +57,7 @@ class ValidationSpecs extends Specification {
 			not666( None) must_== Success(None)
 		}
 		"return CannotContain666( 666) when 666" in {
-			not666( Some("666")) must_==  Failure(NonEmptyList(  CannotContain666( "666")))
+			not666( Some("666")) must beFailing
 		}
 		"validate string of 3 characters when the maxlength is 4" in {
 			maxLength( 4) ( Some("123"))must_== Success(Some("123"))
@@ -68,13 +69,13 @@ class ValidationSpecs extends Specification {
 			maxLength( 4 ) ( None)must_== Success(None)
 		}
 		"returns CannotBeLongerThan(4, 12345) when the string 12345, and the length 4" in {
-			maxLength(4) ( Some("12345"))must_==  Failure( NonEmptyList( CannotBeLongerThan( 4, "12345")))
+			maxLength(4) ( Some("12345"))must beFailing
 		}
 		"validate 'abc' is all alpha" in {
 			allAlpha( Some("abc")) must_== Success(Some("abc"))
 		}
 		"returns MustBeAlpha('1abc') when the string is '1abc'" in {
-			allAlpha( Some("1abc")) must_==  Failure( NonEmptyList( MustBeAlpha("1abc")))
+			allAlpha( Some("1abc")) must beFailing
 		}
 
 		"validate minimum validates when the value is equal" in {
@@ -86,7 +87,7 @@ class ValidationSpecs extends Specification {
 		}
 		
 		"returns LessThanMinimum( 3, 2) when the value is 2" in {
-			minimum( 3)( Some(2)) must_==  Failure(NonEmptyList(  LessThanMinimum( 3, 2)))
+			minimum( 3)( Some(2)) must beFailing
 		}
 	}
 
@@ -108,7 +109,7 @@ class ValidationSpecs extends Specification {
 			val field2 = new AlphaField()
 			field1.value = "1"
 			field2.value = "a"
-			onlyOneHasValue( field1:: field2::Nil)( null) must_== Failure( NonEmptyList( OnlyOneFieldCanHaveValue( field1 :: field2 :: Nil)))
+			onlyOneHasValue( field1:: field2::Nil)( null) must beFailing
 		}
 	}
 }

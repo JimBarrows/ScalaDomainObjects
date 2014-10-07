@@ -4,6 +4,7 @@ import org.specs2.mutable._
 import sdo.core.domain._
 import scalaz.{Success => ValidationSuccess, Failure=> ValidationFailure, Scalaz, _}
 import Scalaz._
+import org.specs2.scalaz.ValidationMatchers._
 import sdo.peopleAnOrganizations.domain._
 
 class AreaNumberSpecs extends Specification {
@@ -11,33 +12,27 @@ class AreaNumberSpecs extends Specification {
 	"An area number" should {
 
 		"method notBetween734And749 should return valid if the value is not between 734 & 749." in {
-			AreaNumber.notBetween734And749(Some("734")) must_== ValidationFailure(NonEmptyList(AreaCannotBeBetween734And749( "734")))
+			AreaNumber("734") must beFailing
 		}
 
 		"not validate  if the area number is between 734 and 749" in {
 			(734 to 749) foreach { n=>
-				val areaNumber = AreaNumber(n.toString) 
-				areaNumber.validate must_== ValidationFailure(NonEmptyList(AreaCannotBeBetween734And749( n.toString)))
+				AreaNumber(n.toString) must beFailing
 			}	
 			success
 		}
 
 		"not validate  if the area number is over 772" in {
-			val areaNumber = AreaNumber("773") 
-			areaNumber.validate must_== ValidationFailure(NonEmptyList(CannotBeOver772( "773")))
+			AreaNumber("773") must beFailing
 		}
 
 		"not validate  if area number is 666" in {
-			val areaNumber = AreaNumber("666") 
-			areaNumber.validate must_== ValidationFailure(NonEmptyList(CannotContain666("666")))
+			AreaNumber("666")  must beFailing
 		}
 		"not validate  if the area number is not exactly 3 numbers in length" in {
-			var areaNumber = AreaNumber("1") 
-			areaNumber.validate must_== ValidationFailure(NonEmptyList(MustBeExactly(3,"1")))
-			areaNumber = AreaNumber("22")
-			areaNumber.validate must_== ValidationFailure(NonEmptyList(MustBeExactly(3,"22")))
-			areaNumber = AreaNumber("4444")
-			areaNumber.validate must_== ValidationFailure(NonEmptyList(MustBeExactly(3,"4444")))
+			AreaNumber("1")  must beFailing
+			AreaNumber("22") must beFailing
+			AreaNumber("4444") must beFailing
 		}
 	}
 }
@@ -48,10 +43,8 @@ class SocialSecurityFieldSpecs extends Specification {
 
 
 		"not validate  if the area number is between 734 and 749" in {
-			val ssnField = new SocialSecurityNumberField() 
-			ssnField.value = SSN( Some(AreaNumber("734")), None, SerialNumber("1234"))
-
-			ssnField.validate must_== ValidationFailure(NonEmptyList(AreaCannotBeBetween734And749( "734")))
+			//SocialSecurityNumberField( SocialSecurityNumber( Some(AreaNumber("734")), GroupNumber("12"), SerialNumber("1234"))) must beFailing
+			todo
 		}
 
 		"not validate  if the area number is over 772" in {

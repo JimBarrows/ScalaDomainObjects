@@ -4,6 +4,7 @@ import scala.math.BigInt
 import scala.collection.mutable.MutableList
 import scalaz._
 import std.AllInstances._
+import std.list._
 import Scalaz._
 import java.util.{ Currency, Locale, UUID }
 
@@ -22,22 +23,46 @@ class Field[T] extends ChangeStateTracking {
 
   def value: Option[T] = data
 
-  def validate: ValidationNel[FieldError, Option[T]] = value.successNel[FieldError]
+  import std.list._
 
-  def assign(newValue: Option[T]): Field[T] = {
-    if (!data.equals(newValue) && (writable_? || !initialized_?)) {
-      data = newValue
-      validate
-      makeDirty
+  def validations :List[Option[T] => Validation[FieldError, Option[T]]] = Nil
+
+  def assign(newValue: Option[T]): ValidationNel[FieldError, Field[T]]={
+
+    if ( data.equals(newValue)) {
+
+      this.successNel[FieldError]
+
+    } else  if (writable_? || ! initialized_?) {  
+
+      
+      validations.traverseU(_ andThen (_.toValidationNel) apply newValue) map { 
+        case c :: _ => {
+      
+          makeDirty
+      
+          data = newValue
+          this
+        }
+        case Nil => {
+      
+          makeDirty
+      
+          data = newValue
+          this
+        }
+      }
+    } else if (! writable_? && initialized_?){
+      
+      FieldIsReadOnly(newValue).failNel[Field[T]]      
+    } else {
+      throw new IllegalStateException ("Field is in weird state.")
     }
-    this
   }
 
-  def value_=(newValue: Option[T]) = assign(newValue)
+  //def value_=(newValue: Option[T]) = assign(newValue)
 
   def value_=(newValue: T) = if (newValue == null) assign(None) else assign(Some(newValue))
-
-  def update(newValue: T): Unit = value = newValue
 
   override def equals(that: Any) = {
     (that.getClass == this.getClass) && (that.asInstanceOf[Field[T]].value == this.value)
@@ -47,7 +72,6 @@ class Field[T] extends ChangeStateTracking {
 
   override def toString = "Field[T]( %s)".format(data)
 }
-
 
 class EntityIdField[T](id: T) extends Field[T] {
   override def writable_? = false
@@ -69,21 +93,18 @@ object EntityUuidIdField {
 /**
  * A Field consisting entirely of numbers
  */
-class NumericField extends Field[String] {
-  override def validate = value match {
-    case Some(f) => allNumeric(value)
-    case None => value.successNel[FieldError]
-  }
+class NumericField extends Field[String] {          
+  override def validations :List[Option[String] => Validation[FieldError, Option[String]]]  =  List( allNumeric _ )
   override def toString = "NumericField( %s)".format(data)
 }
 
 object NumericField {
 
   def apply = new NumericField()
+
   def apply(value: String) = {
     val nf = new NumericField()
-    nf.value = (value)
-    nf
+    nf.value = value    
   }
 
   def apply(value: Integer) = {
@@ -91,17 +112,16 @@ object NumericField {
     nf.value = (value.toString)
     nf
   }
+ 
 }
 
 /**
  * A Field consisting entirely of alphabetic characters, and punctuation
  */
 class AlphaField extends Field[String] {
-  override def validate = value match {
-    case Some(f) => allAlpha(value)
-    case None => value.successNel[FieldError]
-  }
 
+  override def validations :List[Option[String] => Validation[FieldError, Option[String]]]  =  List(allAlpha _)
+    
   override def toString = "AlphaField( %s)".format(data)
 }
 
@@ -145,7 +165,12 @@ class ShortTextField extends Field[String] {
 }
 
 object ShortTextField {
-  def apply(text: String) = (new ShortTextField().value = text).asInstanceOf[ShortTextField]
+  def apply(text: String) = {
+    val shortTextField = new ShortTextField()
+    shortTextField.value = text
+    shortTextField
+  }
+
   def apply() = new ShortTextField()
 }
 
@@ -155,7 +180,6 @@ class TextField extends Field[String] {
 }
 
 object TextField {
-  def apply(text: String): TextField = new TextField().value_=(text).asInstanceOf[TextField]
   def apply(): TextField = new TextField()
 }
 
@@ -164,7 +188,6 @@ class DateTimeField extends Field[DateTime] {
 }
 
 object DateTimeField {
-  def apply(newDateTime: DateTime): DateTimeField = new DateTimeField().value_=(newDateTime).asInstanceOf[DateTimeField]
   def apply(): DateTimeField = new DateTimeField()
 }
 
@@ -184,7 +207,6 @@ class ListField[T] extends Field[MutableList[T]] {
 
     if (writable_? || !initialized_?) {
       l += newValue
-      validate
       makeDirty
     }
   })
@@ -202,7 +224,6 @@ class ListField[T] extends Field[MutableList[T]] {
   def remove(value: T): Unit = data = data.map(l => {
     if (writable_? || !initialized_?) {
       val newList = l.diff(value :: Nil)
-      validate
       makeDirty
       newList
     } else {

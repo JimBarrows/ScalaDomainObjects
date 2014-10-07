@@ -1,7 +1,12 @@
 package sdo.ecommerce.domain
 
 import java.util.Locale
-import sdo.core.domain.{Entity, Field, EntityUuidIdField, ListField, TextField, ShortTextField, ValueObject}
+import scalaz._
+import std.AllInstances._
+import std.list._
+import Scalaz._
+import sdo.core.domain.ValidationMethods._
+import sdo.core.domain._
 import sdo.peopleAnOrganizations.domain.Party
 
 class UserLogin( initialId :EntityUuidIdField) extends Entity {
@@ -14,9 +19,13 @@ class UserLogin( initialId :EntityUuidIdField) extends Entity {
 	val accountStatus = AccountStatusField()
 	val owner: Option[Party] = None
 
-	val preferences = new ListField[ WebUserPreference[ _]] ()
+	val preferences = new ListField[ WebUserPreferenceField[_]] ()
 
-	override def fieldList :List[ Field[ _]] = List( username, password, webAddress, accountStatus, preferences)
+	def preferences_+= (preference: LocalePreferenceField) =
+		if( preference != null)  {						
+			preferences.add( preference)
+		}
+	
 
 }
 
@@ -44,30 +53,37 @@ object UserLogin {
 	}
 }
 
+class WebUserPreference[+T]( name: String, value: T)
+case class LocalePreference (name: String, locale: Locale) extends WebUserPreference[Locale](name, locale)
 
-class LocaleField extends Field[ Locale] {
-	override def toString = "LocaleField( %s)".format( data)
-}
-
-object LocaleField {
+class WebUserPreferenceField[ T ] extends Field[T]{
 	
-	def apply( locale :Locale) = (new LocaleField value = locale).asInstanceOf[LocaleField]
-
+	override def toString = "WebUserPreference=(%s)".format( value)
 }
 
-class WebUserPreference[T <: Field[ _]] ( initialName :ShortTextField, initialValue :T) extends ValueObject {
-	def name :ShortTextField = initialName
-	def value :T = initialValue
-	override def fieldList :List[ Field[ _]] = List( initialName, initialValue)
-	override def toString = "WebUserPreference( name= %s, value= %s)".format( name, value)
-}
+class LocalePreferenceField extends WebUserPreferenceField[LocalePreference] {
+	import LocalePreferenceField._
+	override def validations :List[Option[LocalePreference] => Validation[FieldError, Option[LocalePreference]]]  =  List(nameAndLocaleCantBeEmptyOrNull _)
+ }
 
-class LocalePreference( name :ShortTextField, value :LocaleField) extends WebUserPreference[ LocaleField]( name, value) {
-	override def toString = "LocalePreference( name= %s, value= %s)".format( name, value)
-}
-
-object LocalePreference {
+object LocalePreferenceField {
 	
-	def apply( name :String, locale :Locale) = new LocalePreference( ShortTextField( name), LocaleField( locale)).asInstanceOf[LocalePreference]
+	def apply( name :String, locale :Locale) = {
+		val field = new LocalePreferenceField()		
+		field.value =( LocalePreference(name, locale))
+		field
+	}
+
+	def nameAndLocaleCantBeEmptyOrNull( localPreference: Option[LocalePreference]): Validation[FieldError, Option[LocalePreference]]  = {
+		localPreference.map( lp =>{
+			if(lp.name == null || lp.locale == null){
+				CannotBeNull.fail[Option[LocalePreference]]
+			} else if (lp.name == "") {
+				CannotBeEmpty.fail[Option[LocalePreference]]
+			} else {
+				localPreference.success[FieldError]
+			}
+		}).getOrElse( localPreference.success[FieldError]).asInstanceOf[ Validation[FieldError, Option[LocalePreference]]]
+	}
 }
 

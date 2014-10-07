@@ -40,8 +40,10 @@ class EntitySpecs extends Specification {
 
     "the list of fields should handle very field type" in {
 
-      val dateTimeField = DateTimeField(DateTime.now)
-      val textField = TextField("foo")
+      val dateTimeField = DateTimeField()
+      dateTimeField.value_= (DateTime.now)
+      val textField = TextField()
+      textField value = "foo"
 
       class Foo extends Entity {
         val scheduledAt = dateTimeField
@@ -133,31 +135,6 @@ class EntitySpecs extends Specification {
       test.numeric value = "1"
       test.makeClean
       test.dirty_? must beFalse
-    }
-
-    "returns a list of field errors" in {
-      val test = Test()
-      test.numeric value = "a"
-      test.validate must_== Failure(NonEmptyList(FieldsAreInvalid()))
-    }
-
-    "returns a list of domain errors" in {
-      val test = new Test(EntityUuidIdField()) {
-        override def validate = onlyOneHasValue(numeric :: alpha :: Nil)(this)
-      }
-      test.numeric value = "1"
-      test.alpha value = "a"
-      test.validate must_== Failure(NonEmptyList(OnlyOneFieldCanHaveValue(test.numeric :: test.alpha :: Nil)))
-    }
-
-    "validates itself whenever a field changes" in {
-
-      val test = new Test(EntityUuidIdField()) {
-        override def validate = onlyOneHasValue(numeric :: alpha :: Nil)(this)
-      }
-      test.numeric value = "1"
-      test.alpha value = "a"
-      test.validate must_== Failure(NonEmptyList(OnlyOneFieldCanHaveValue(test.numeric :: test.alpha :: Nil)))
     }
 
     "uses id field for equality" in {

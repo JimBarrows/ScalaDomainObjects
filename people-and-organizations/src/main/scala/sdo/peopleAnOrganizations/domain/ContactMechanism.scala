@@ -41,15 +41,14 @@ class PhoneNumber extends ContactMechanism {
 class PhoneNumberField extends ContactMechanismField[PhoneNumber] {
 }
 
-class PostalAddress(activePeriod: DateRangeField, comment: TextField, address: TextField, within: GeographicBoundary) extends ContactMechanism {
+class PostalAddress(activePeriod: DateRangeField, comment: TextField, address: TextField,city: City, state: State, zipCode: ZipCode) extends ContactMechanism {
 
 }
 
 object PostalAddress {
 
-  def usPostalAddress(address: String, city: City, state: State, zipCode: ZipCode) = {
-    state contains_+ (zipCode contains_+ (city))
-    new PostalAddress(DateRangeField(), TextField(), TextField(address), city)
+  def usPostalAddress(address: TextField,city: City, state: State, zipCode: ZipCode) = {    
+    new PostalAddress(DateRangeField(), TextField(), address, city, state, zipCode)
   }
 }
 

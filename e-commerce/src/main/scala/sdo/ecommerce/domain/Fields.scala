@@ -1,8 +1,14 @@
 package sdo.ecommerce.domain
 
 import org.apache.commons.codec.digest.DigestUtils._
-import sdo.core.domain.{ Field, TextField }
+import sdo.core.domain._
 
+import scalaz._
+import std.AllInstances._
+import std.list._
+import Scalaz._
+
+import sdo.core.domain.ValidationMethods._
 /**
  * When an account is first created, it hasn't been verified yet.  From the unverified state it can move to
  * either the active or inactive state.  Active state can only move to inactive.  Inactive can move to active
@@ -22,23 +28,17 @@ object AccountStatusField {
 
   def apply() = {
     val asv = new AccountStatusField
-    asv.value = Some(unverified)
+    asv.value = unverified
     asv
   }
 }
 
 class PasswordField extends TextField {
 
-  override def assign(newValue: Option[String]): Field[String] = {
-    if (!data.equals(newValue) && (writable_? || !initialized_?)) {
-
-      data = newValue.map(nv => sha512Hex(nv + PasswordField.salt))
-      validate
-      makeDirty
-    }
-    this
+  override def assign(newValue: Option[String]): ValidationNel[FieldError, PasswordField]= {
+    val salted =  sha512Hex(newValue.getOrElse("") + PasswordField.salt)
+    super.assign( Some( salted)).asInstanceOf[ValidationNel[FieldError, PasswordField]]
   }
-
 }
 
 object PasswordField {

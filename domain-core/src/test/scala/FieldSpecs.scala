@@ -2,8 +2,9 @@ package sdo.core.specs
 
 import org.specs2.mutable._
 import org.specs2.execute._
+import org.specs2.scalaz.ValidationMatchers._
 import sdo.core.domain._
-import sdo.core.domain.ValidationMethods.noErrors
+import sdo.core.domain.ValidationMethods._
 import scalaz.{Success => ValidationSuccess, Failure=> ValidationFailure, Scalaz, _}
 import Scalaz._
 
@@ -16,13 +17,10 @@ class FieldSpecs extends Specification {
 
     class TestField extends Field[String] {
 
-      override def validate = value match {
-        case Some(f) => validationCalled(value)
-        case None => value.successNel[FieldError]
-      }
+      override def validations :List[Option[String] => Validation[FieldError, Option[String]]]  =  List( not666 _, notAllZeros _)
 
       var called = false
-      def validationCalled(testField: Option[String]) = { called = true; value.successNel[FieldError] }
+
     }
 
     "be clean by default" in {
@@ -42,42 +40,18 @@ class FieldSpecs extends Specification {
 
     "return Nil, be initialized and dirty when assigned a legal value" in {
       val testField = new TestField()
-      testField.assign(Some("this is a string"))
+      testField value = "this is a string"
       testField.clean_? must beFalse
       testField.initialized_? must beTrue
     }
 
     "after being made dirty, can be made clean" in {
       val testField = new TestField()
-      testField.assign(Some("this is another string"))
+      testField value = "this is another string"
       testField.makeClean
       testField.clean_? must beTrue
-    }
-
-    "valdiator is called when assignment made" in {
-      val testField = new TestField() {
-
-      }
-      testField.assign(Some("this is another string"))
-      testField.called must beTrue
-    }
-
-    "field contains an empty list when validations pass" in {
-      val testField = new TestField()
-      testField.assign(Some("this is another string"))
-      testField.validate must_== ValidationSuccess(Some("this is another string")) 
-      
-    }
-
-    "field contains a list of errors when validations fail" in {
-      val testField = new TestField() {
-
-        override def validationCalled(testField: Option[String])  =  TestError().failureNel[Option[String]]
-
-      }
-      testField.assign(Some("this is another string")).validate must_== ValidationFailure(NonEmptyList( TestError()))
-
-    }
+    }    
+    
 
     "returns the value assigned" in {
       val testField = new TestField()
@@ -138,32 +112,33 @@ class FieldSpecs extends Specification {
   "A numeric field " should {
     "accept '123456'" in {
       val numeric = new NumericField()
-      numeric.assign(Some("123456")).validate must_== ValidationSuccess(Some("123456")) 
+  
+      numeric.assign(Some("123456")) must beSuccessful
     }
 
     "return error for 'a123456'" in {
       val numeric = new NumericField()
-      numeric.assign(Some("a123456")).validate must_== ValidationFailure(NonEmptyList(MustBeNumeric("a123456")))
+      numeric.assign(Some("a123456")) must_== ValidationFailure(NonEmptyList(MustBeNumeric("a123456")))
     }
 
     "return error for '123a456'" in {
       val numeric = new NumericField()
-      numeric.assign(Some("123a456")).validate must_== ValidationFailure(NonEmptyList(MustBeNumeric("123a456")))
+      numeric.assign(Some("123a456")) must_== ValidationFailure(NonEmptyList(MustBeNumeric("123a456")))
     }
 
     "return error for '123456a'" in {
       val numeric = new NumericField()
-      numeric.assign(Some("123456a")).validate must_== ValidationFailure(NonEmptyList(MustBeNumeric("123456a")))
+      numeric.assign(Some("123456a")) must_== ValidationFailure(NonEmptyList(MustBeNumeric("123456a")))
     }
 
     "return error for ''" in {
       val numeric = new NumericField()
-      numeric.assign(Some("")).validate must_== ValidationFailure(NonEmptyList(MustBeNumeric("")))
+      numeric.assign(Some("")) must_== ValidationFailure(NonEmptyList(MustBeNumeric("")))
     }
 
     "return error for ' 1 '" in {
       val numeric = new NumericField()
-      numeric.assign(Some(" 1 ")).validate must_== ValidationFailure(NonEmptyList(MustBeNumeric(" 1 ")))
+      numeric.assign(Some(" 1 ")) must_== ValidationFailure(NonEmptyList(MustBeNumeric(" 1 ")))
     }
 
     "Be able to put together a list of different subtypes" in {
@@ -178,19 +153,19 @@ class FieldSpecs extends Specification {
   "An alpha field " should {
     "accept 'abc'" in {
       val alpha = new AlphaField()
-      alpha.assign(Some("abc")).validate must_== ValidationSuccess(Some("abc"))
+      alpha.assign(Some("abc")) must beSuccessful
     }
     "return MustBeAlpha('1abc') for value '1abc'" in {
       val alpha = new AlphaField()
-      alpha.assign(Some("1abc")).validate must_== ValidationFailure(NonEmptyList(MustBeAlpha("1abc")))
+      alpha.assign(Some("1abc")) must_== ValidationFailure(NonEmptyList(MustBeAlpha("1abc")))
     }
   }
 
   "An entity id field" should {
     "not be mutable" in {
+      println("Not mutable test")
       val foo = new EntityIdField[Long](1l)
-      foo.value = 3l
-      foo.value must beSome.which(_ == 1l)
+      (foo.value = 3l) must beFailing
     }
 
     "have a uuid setable via apply" in {
