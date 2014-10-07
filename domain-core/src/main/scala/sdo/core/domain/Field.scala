@@ -54,7 +54,8 @@ class Field[T] extends ChangeStateTracking {
       }
     } else if (! writable_? && initialized_?){
       
-      FieldIsReadOnly(newValue).failNel[Field[T]]      
+      FieldIsReadOnly(newValue).failNel[Field[T]]  
+          
     } else {
       throw new IllegalStateException ("Field is in weird state.")
     }

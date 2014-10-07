@@ -34,21 +34,22 @@ class UserLoginSpecs extends Specification {
 
 		"can have preferences added to it" in {
 			val ul = UserLogin( "username", "password", LocalHost80)
-			val wup = LocalePreference( "language", Locale.US)
-			ul.preferences.+=( wup)
-			ul.preferences.list must contain( wup)
+			val wupf:LocalePreferenceField = LocalePreferenceField("language", Locale.US).getOrElse(new LocalePreferenceField()).asInstanceOf[LocalePreferenceField] 
+			ul.preferences_+=( wupf)
+			ul.preferences.list must contain( wupf)
 		}
 
 		"can retrieve a preference" in {
-			val ul = UserLogin( "username", "password", LocalHost80)
-			val wup = LocalePreference( "language", Locale.US)
-			val wup2 = LocalePreference( "currency", Locale.CANADA)
-			ul.preferences.+=( wup)
-			ul.preferences.+=( wup2)
-		
+			val ul = UserLogin( "username", "password", LocalHost80)			
+			val wupf = LocalePreferenceField("language", Locale.US).getOrElse(new LocalePreferenceField()).asInstanceOf[LocalePreferenceField]
+			val wupf2 = LocalePreferenceField("currency", Locale.CANADA).getOrElse( new LocalePreferenceField()).asInstanceOf[LocalePreferenceField]
+			
+			ul.preferences_+=( wupf)
+			ul.preferences.+=( wupf2)
+			val expectedName:String = wupf.value.getOrElse( LocalePreference("", null)).name
 			ul.preferences.find( p => {
-				p.value.getOrElse("")//.name = (Some("language"))
-				}) must beSome( wup)
+				p.value.getOrElse( LocalePreference("", null)).asInstanceOf[LocalePreference].name == "language"
+			}) must beSome( wupf)
 		}
 
 		"be for a single web address" in {

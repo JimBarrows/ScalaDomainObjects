@@ -25,8 +25,6 @@ class UserLogin( initialId :EntityUuidIdField) extends Entity {
 		if( preference != null)  {						
 			preferences.add( preference)
 		}
-	
-
 }
 
 object UserLogin {
@@ -69,9 +67,8 @@ class LocalePreferenceField extends WebUserPreferenceField[LocalePreference] {
 object LocalePreferenceField {
 	
 	def apply( name :String, locale :Locale) = {
-		val field = new LocalePreferenceField()		
+		val field: LocalePreferenceField = new LocalePreferenceField()		
 		field.value =( LocalePreference(name, locale))
-		field
 	}
 
 	def nameAndLocaleCantBeEmptyOrNull( localPreference: Option[LocalePreference]): Validation[FieldError, Option[LocalePreference]]  = {

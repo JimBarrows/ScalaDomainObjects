@@ -174,7 +174,7 @@ class RepositorySpecs extends Specification {
 
 		override def filter( predicate :Predicate[TestEntity]) = list.filter( predicate.isSatisfiedBy( _))
 
-		override def filterNot( predicate :Predicate[TestEntity]) = list.filterNot( predicate.isSatisfiedBy( _))
+		override def filterNot( predicate :Predicate[TestEntity]) = list.filterNot( ! predicate.isSatisfiedBy( _))
 
 		override def exists( predicate :Predicate[TestEntity])  = list.exists( predicate.isSatisfiedBy( _))
 
