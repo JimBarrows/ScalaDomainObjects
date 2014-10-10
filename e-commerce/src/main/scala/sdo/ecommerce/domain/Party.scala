@@ -9,10 +9,9 @@ import sdo.peopleAnOrganizations.domain.OrganizationRole
 import sdo.peopleAnOrganizations.domain.Role
 import sdo.peopleAnOrganizations.domain.PartyRole
 
-class AutomatedAgent(initialId: EntityUuidIdField) extends Entity
-  with Party
-  with RolesToPlay[PartyRole] {
-  override val id = initialId
+class AutomatedAgent(initialId: EntityUuidIdField) extends Party(initialId)
+                                                    with RolesToPlay[PartyRole] {
+
 }
 
 class Webmaster extends PersonRole

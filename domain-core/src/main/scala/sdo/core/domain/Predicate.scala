@@ -11,8 +11,8 @@ class CompositePredicate[T]( val left :Predicate[T], val right :Predicate[T] ) e
 }
 
 class AndPredicate[T](	override val left :Predicate[T], 
-														override val right :Predicate[T]) 
-		extends CompositePredicate[T](left, right) {
+						override val right :Predicate[T]) 
+															extends CompositePredicate[T](left, right) {
 
 	override def isSatisfiedBy( candidate: T) = left.isSatisfiedBy( candidate) && right.isSatisfiedBy( candidate)
 }

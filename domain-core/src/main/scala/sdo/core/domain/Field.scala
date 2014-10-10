@@ -243,6 +243,11 @@ class RangeField[T] extends Field[Range[T]] {
 case class DateRange(from: DateMidnight, thru: Option[DateMidnight])
 
 class DateRangeField extends Field[DateRange] {
+  def isValid() = value.map( v => 
+    ((v.from.isBefore( DateMidnight.now) || 
+      v.from.isEqual(DateMidnight.now)) && 
+    v.thru.map( t => t.isBefore( DateMidnight.now) || 
+      t.isEqual( DateMidnight.now)).getOrElse(true))).getOrElse(true)
 }
 
 object DateRangeField {

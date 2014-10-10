@@ -12,6 +12,7 @@ libraryDependencies in ThisBuild ++= Seq(
 		    "com.typesafe.slick" %% "slick" % "2.1.0",
 		    "commons-codec" % "commons-codec" % "1.9",
 		    "org.scalaz" %% "scalaz-core" % "7.1.0",
+		     "org.scala-lang" % "scala-reflect" % "2.11.2",
 		    "org.typelevel" %% "scalaz-specs2" % "0.3.0" % "test"
 		)
 

@@ -36,6 +36,8 @@ class Partner extends OrganizationRole
 
 class InternalOrganization extends OrganizationRole 
 
+class ParentOrganization extends OrganizationRole 
+
 class ConsumerRole extends PersonRole with OrganizationRole 
 
 class Customer extends ConsumerRole

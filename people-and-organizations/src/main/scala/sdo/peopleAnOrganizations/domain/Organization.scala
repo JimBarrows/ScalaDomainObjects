@@ -2,18 +2,11 @@ package sdo.peopleAnOrganizations.domain
 
 import sdo.core.domain.{ Entity, Field, EntityUuidIdField, TextField }
 
-class Organization(initialId: EntityUuidIdField) extends Entity
-  with Party
-  with Classifications
-  with RolesToPlay[OrganizationRole]
-  with Contactable {
-
-  override val id = initialId
+class Organization(initialId: EntityUuidIdField)  extends Party(initialId)
+                                                  with RolesToPlay[OrganizationRole] {
 
   val name = TextField()
-
-  override def fieldList: List[Field[_]] = List(name)
-  setup
+  
 
 }
 

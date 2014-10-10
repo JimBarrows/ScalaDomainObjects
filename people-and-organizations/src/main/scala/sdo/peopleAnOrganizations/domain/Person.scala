@@ -5,13 +5,8 @@ import sdo.core.domain.ValidationMethods._
 
 
 
-class Person(initialId: EntityUuidIdField) extends Entity
-  with Party
-  with Classifications
-  with RolesToPlay[PersonRole]
-  with Contactable {
-
-  override val id = initialId
+class Person(initialId: EntityUuidIdField) extends Party(initialId)
+                                            with RolesToPlay[PersonRole]{
 
   val gender = GenderField
   val birthday = DateField
