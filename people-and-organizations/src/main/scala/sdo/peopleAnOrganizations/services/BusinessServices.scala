@@ -22,7 +22,7 @@ trait BusinessServices {
 		lo
 	}
 
-	def business() = partyRepository.find( InternalOrganizationQuery)
+	def business() = partyRepository.find( businessQuery)
 
 	object InternalOrganizationQuery extends Predicate[Organization] {
 		override def isSatisfiedBy( candidate :Organization) = {			
