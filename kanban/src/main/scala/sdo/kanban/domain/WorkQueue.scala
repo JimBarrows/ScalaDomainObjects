@@ -1,4 +1,4 @@
-package sdo.workEffort.domain
+package sdo.kanban.domain
 
 import scalaz._
 import Scalaz._
@@ -8,8 +8,8 @@ import sdo.core.domain.{Entity,
 						Field,
 						IntegerField,
 						ListField}
-import sdo.kanban.domain.Person
-import sdo.kanban.domain.Person
+import sdo.workEffort.domain.WorkEffort
+import sdo.peopleAnOrganizations.domain.{Person => PartyPerson}
 
 class WorkQueue( initialId: EntityUuidIdField) extends Entity {
 

@@ -1,7 +1,7 @@
 package sdo.ecommerce.domain
 
 import sdo.core.domain._
-import sdo.peopleAnOrganizations.domain.Party
+import sdo.peopleAnOrganizations.domain._
 
 class Subscription ( initialId :EntityUuidIdField) extends Entity {
 
@@ -25,9 +25,9 @@ class Subscription ( initialId :EntityUuidIdField) extends Entity {
 	
 	val sendTo = ContactMechanism ();
 	
-	val subscriber = PartyRole ()
+	val subscriber = RoleField ()
 	
-	val subscriptionFor =PartyRole()
+	val subscriptionFor =RoleField()
 }
 
 

@@ -73,7 +73,7 @@ class ProjectManager extends PartyAssignment
 
 class TeamMember extends PartyAssignment
 
-case class Performer  extends PartyAssignment
+case class Performer() extends PartyAssignment
 
 class Status(at: DateTimeField)
 

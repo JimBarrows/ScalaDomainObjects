@@ -22,6 +22,11 @@ class RoleField extends Field[Role] {
   override def toString = "RoleField( %s)".format(value.toString)
 }
 
+object RoleField {
+  
+  def apply() = new RoleField()
+}
+
 trait PartyRole extends Role
 
 trait PersonRole extends PartyRole
