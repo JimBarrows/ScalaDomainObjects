@@ -25,9 +25,9 @@ class Subscription ( initialId :EntityUuidIdField) extends Entity {
 	
 	val sendTo = ContactMechanism ();
 	
-	val subscriber = RoleField ()
+//	val subscriber = RoleField ()
 	
-	val subscriptionFor =RoleField()
+//	val subscriptionFor =RoleField()
 }
 
 

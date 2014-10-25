@@ -10,6 +10,7 @@ libraryDependencies in ThisBuild ++= Seq(
 			"org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.2",
 			"org.scala-lang" % "scala-reflect" % "2.11.2",
 		    "org.specs2" %% "specs2" % "2.4.4" % "test",
+		    "junit" % "junit" % "4.8.1" % "test",
 		    "com.github.nscala-time" %% "nscala-time" % "1.4.0",
 		    "com.h2database" % "h2" % "1.4.181" ,
 		    "org.slf4j" % "slf4j-nop" % "1.7.7",
