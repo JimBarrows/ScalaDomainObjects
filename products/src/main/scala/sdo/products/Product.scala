@@ -17,6 +17,8 @@ class Product ( initialId :EntityUuidIdField) extends Entity {
 	val supportDiscontinuationDate = new DateField()
 	
 	val comment = new TextField()
+	
+	val categories = new ListField[Category]()
 }
 
 object Product {

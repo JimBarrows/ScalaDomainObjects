@@ -7,6 +7,7 @@ import sdo.core.domain._
 import sdo.core.domain.ValidationMethods._
 import scalaz.{Success => ValidationSuccess, Failure=> ValidationFailure, Scalaz, _}
 import Scalaz._
+import org.joda.time.DateMidnight
 
 
 class FieldSpecs extends Specification {
@@ -226,6 +227,20 @@ class FieldSpecs extends Specification {
 
       field1 must be_==(field2)
     }
+  }
+  
+  "A date range field" should {
+  	"be able to determine if the current date is in the range" in {
+  		val dateRange = DateRangeField()
+  		dateRange value = new DateRange(DateMidnight.now.minusDays(30), Some(DateMidnight.now().plusDays(30)))
+  		dateRange.containsNow must beTrue
+  	}
+  	
+  	"be able to determine if a date is in the range" in {
+  		val dateRange = DateRangeField()
+  		dateRange value = new DateRange(DateMidnight.now.minusDays(30), Some(DateMidnight.now().plusDays(30)))
+  		dateRange.contains ( DateMidnight.now.minusDays(10)) must beTrue
+  	}
   }
 }
 

@@ -201,16 +201,39 @@ object DateField {
 class ListField[T] extends Field[MutableList[T]] {
 
   data = Some(new MutableList[T]())
+  
+  override def validations :List[Option[MutableList[T]] => Validation[FieldError, Option[MutableList[T]]]] = Nil
 
-  def +=(newValue: T): Unit = add(newValue)
+  def +=(newValue: T) = if(newValue != null) add(newValue)
 
-  def add(newValue: T): Unit = data.map(l => {
+  def add(newValue:T): ValidationNel[FieldError, Field[MutableList[T]]] = data.map(l => {
 
-    if (writable_? || !initialized_?) {
-      l += newValue
-      makeDirty
-    }
-  })
+  	if (writable_? || ! initialized_?) {  
+      
+      validations.traverseU(_ andThen (_.toValidationNel) apply newValue) map { 
+        case c :: _ => {
+      
+          makeDirty
+      
+          l += newValue
+          this
+        }
+        case Nil => {
+      
+          makeDirty
+      
+          l += newValue
+          this
+        }
+      }
+    } else if (! writable_? && initialized_?){
+      
+      FieldIsReadOnly(Some(newValue)).failNel[Field[MutableList[T]]]  
+          
+    } else {
+      throw new IllegalStateException ("Field is in weird state.")
+    }   
+  }).orElse(throw new IllegalStateException ("Field has never been initialized."))
 
   def length: Int = list.length
 
@@ -243,11 +266,19 @@ class RangeField[T] extends Field[Range[T]] {
 case class DateRange(from: DateMidnight, thru: Option[DateMidnight])
 
 class DateRangeField extends Field[DateRange] {
-  def isValid() = value.map( v => 
-    ((v.from.isBefore( DateMidnight.now) || 
-      v.from.isEqual(DateMidnight.now)) && 
-    v.thru.map( t => t.isBefore( DateMidnight.now) || 
-      t.isEqual( DateMidnight.now)).getOrElse(true))).getOrElse(true)
+	def containsNow : Boolean = value.map( r => {						
+			r.from .isBeforeNow()  && (r.thru.isEmpty || r.thru.exists( _.isAfterNow()))
+		}).getOrElse(true)
+	
+	def contains( date: DateMidnight) = value.map( r=> {
+			r.from.isBefore(date) && (r.thru.isEmpty || r.thru.exists( _.isAfter(date)))
+		}).getOrElse(true)
+	
+	def isValid() = value.map( v => 
+			((v.from.isBefore( DateMidnight.now) || 
+					v.from.isEqual(DateMidnight.now)) && 
+					v.thru.map( t => t.isBefore( DateMidnight.now) || 
+					t.isEqual( DateMidnight.now)).getOrElse(true))).getOrElse(true)
 }
 
 object DateRangeField {

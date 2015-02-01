@@ -3,8 +3,10 @@ package sdo.products.test.unit
 import org.joda.time.DateMidnight
 import org.junit.runner.RunWith
 import org.specs2.mutable.Specification
-
 import sdo.products.Product
+import sdo.products.Category
+import sdo.core.domain.DateRange
+
 
 class ProductSpecs extends Specification {
 
@@ -48,15 +50,28 @@ class ProductSpecs extends Specification {
   	}
   	
   	"be categorized" in {
-  		pending
+  		val product = Product()
+  		val category = Category()
+  		product.categories += category
+  		
+  		product.categories.length must be_== (1)
   	}
   	
   	"allow for categorization for a period of time" in {
-  		pending
+  		val category = Category()
+  		category.active value = DateRange( DateMidnight.now().plusDays(-30), Some(DateMidnight.now().plusDays(30)))
+  		category.active.containsNow must beTrue
   	}
   	
   	"allow for only one primary category" in {
-  		pending
+  		val product = Product()
+  		val primaryCategory = Category()
+  		val secondPrimaryCategory = Category()
+  		primaryCategory.primaryFlag  value = true
+  		secondPrimaryCategory.primaryFlag  value = true
+  		product.categories += primaryCategory
+  		
+  		
   	}
   }
 }
